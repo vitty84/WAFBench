@@ -77,12 +77,42 @@ wb -t 10 live.com/home.html
 
 Benchmark "live.com/home.html" for 10 seconds just like ab.
 
+### WAF correctness testing with YMAL file in 3 steps
+
+#### Step 1: Generate the packets with YMAL file
+
+`ftw_generator.py` is located in `FTW-compatible-tool`.
+
+```
+python ftw_generator.py -f sample.yaml -o pkts.dat   
+```
+	   
+#### Step 2: Test using generated packets and save response to response.dat
+
+```
+wb -t 10 -F pkts.dat -R response.dat 10.0.1.131:18081
+```
+
+The four options are:    
+
+* duration of testing (-t 10, 10 seconds) 
+* input packets (-F pkts.dat, including traffic) 
+* save received message to file "response.dat" (-R response.dat) 
+* destination server/URL (10.0.1.131:18081). Note that, unlike ab, wb does not require "/" at the end of URL.
+			
+#### Step 3: Compare the resulted response with the result in the same YAML
+
+```	   
+python ftw_comparator.py -L <remote_server_log> -o compare_output.dat
+```
+
 ### Examples
 
 There are several examples in `../sample/` to help understanding usage.
 
 - `WB-GET.sh` uses `wb` to conduct GET test.
 - `WB-POST.sh` uses `wb` to conduct POST test.
+- `WB-SEND-PACKET.sh` uses `wb` to send HTTP packets directly.
 
 ## Synopsis
 

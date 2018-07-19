@@ -26,6 +26,7 @@ As you can see, WB Generator can provide all kinds of traffic based on real worl
 ## Features
 
 - **Support Stress Performance Testing:** Generate the same traffic as Apache Bench (AB) and do the performance testing.
+- **Support FTW Framework:** Generate the traffic from YAML files and do the correctness testing. 
 
 ## Usage
 
@@ -107,12 +108,49 @@ wb -t 10 -c 25 -F requests.dat 10.0.1.1:18081
 
 * About the format of request file, please refer to [WB Readme](./wb/README.md)
 
+#### Conduct FTW-Compatible Test
+
+* Please install the dependency library for FTW-compatible-tool first. You can refer to [FTW-compatible-tool Readme](./FTW-compatible-tool/README.md)
+* We recommend you to mount the server's log file to client machine. Assuming we mount it to */mnt/server/logs/error.log* 
+* Assuming that the server is at 10.0.1.1:18081 running and we are in folder *FTW-compatible-tool/* we can:
+
+```
+./rtt.sh -d 10.0.1.1:18081 -y rtt_rules -l /mnt/server/logs/error.log
+```
+
+* Then we can use ftw_log_searcher to get more detailed info
+
 ### Advance Usage
 
 Since the components are independent to each other, the detailed build, install and use tutorials are maintained in their own folder. You can access them at:
 
+* Generator
+  * [FTW-Compatible YAML Generator](./FTW-compatible-tool/README.md)
 * WB
   * [WB](./wb/README.md)
+
+## Attributions
+
+WB uses the following libraries.
+
+```
+FTW
+
+https://github.com/CRS-support/ftw
+
+Copyright 2016 Fastly
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+```
 
 ## Changelog
 
