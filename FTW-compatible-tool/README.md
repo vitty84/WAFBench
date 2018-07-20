@@ -2,15 +2,15 @@
 
 ## Purpose of FTW-Compatible Tool Suits
 
-FTW-Compatible YAML Tool suits are designed to parse [FTW](https://github.com/fastly/ftw)(Framework for Testing WAFs) format YAML and:
+FTW-Compatible Tool Suits is wb's extension module, which supports [FTW](https://github.com/fastly/ftw)(Framework for Testing WAFs) format YAML to conduct WAF correctness testing. As FTW, it uses the OWASP Core Ruleset V3 as a baseline to test rules on a WAF.
 
-* Generate input information for [wb](../wb/README.md) *(FTW Generator)*;
-* Conduct WB's output comparison with expected conditions *(FTW Comparator)*;
-* Give out detailed information including raw YAML, request, response and check result for a given test title *(FTW Log Searcher)*.
+## Introduction
 
-FTW-Compatible Tool suits are parts of [WB](../README.md), the Web Application Firewall Bench tool suits.
+FTW-Compatible Tool suits is a part of [WB](../README.md), the Web Application Firewall Bench tool suits. It contains 4 tools: FTW Generator, FTW Comparator, FTW Log Searcher and a [script](./rtt.sh) to conduct the test conveniently.
 
-It contains 4 tools: FTW Generator, FTW Comparator, FTW Log Searcher and a script to conduct the test conveniently.
+* *FTW Generator*: Generate input information for [wb](../wb/README.md);
+* *FTW Comparator*: Conduct WB's output comparison with expected conditions;
+* *FTW Log Searcher*: Give out detailed information including raw YAML, request, response and check result for a given test title.
 
 ## Installation
 
@@ -20,13 +20,16 @@ It contains 4 tools: FTW Generator, FTW Comparator, FTW Log Searcher and a scrip
 * **FTW** python module to interpret YAML file
 
 Python2 installation is as follows: 
+
 ```
 sudo yum install python           # Install python2
 sudo yum install python-pip       # Install python2 pip
 sudo pip install --upgrade pip    # Update pip
 sudo pip install ftw			  # Install the ftw library
 ```
+
 Python3 installation is as follows: 
+
 ```
 sudo yum install python34         # Intanll python3
 sudo yum install python34-pip     # Intanll python3 pip
@@ -91,7 +94,7 @@ This tool is used to inquire the detailed information of given test. This tool w
 
 ### FTW Test Script - Regression Testing Tool (RTT)
 
-If reading tutorial written above carefully you'll find that a typical test cycle combines *FTW Generator*, [*WB*](../Sender/README.md) and *FTW Comparator* together:
+If reading tutorial written above carefully you'll find that a typical test cycle combines *FTW Generator*, [*WB*](../wb/README.md) and *FTW Comparator* together:
 
 ```
 python ftw_generator.py ...

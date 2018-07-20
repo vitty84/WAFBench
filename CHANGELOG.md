@@ -9,6 +9,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 - [FTW Compatible Tool Suits](./FTW-compatible-tool/README.md) to support FTW testing.
 - `./sample` adds a demo of wb showing how to send raw HTTP requests and serveral demos for FTW Compatible Tool Suits.
 - Add tutorial of conducting FTW testing in [wb's README](./wb/README.md).
+- [README.md](./README.md) adds infos about FTW Compatible Tool Suits.
+
+### Changed
+- Revise dependency instructions in [README.md](./README.md)
 
 ## [1.0.0] - 2018-07-16
 ### Added

@@ -65,24 +65,26 @@ Before installing dependencies using yum in CentOS, we recommend you to enable t
 However you can find these packages in your own source using 'yum search ...'
 
 ```
-yum install gcc gcc-c++ make                # Install build-essential
-yum install libev-devel.x86_64              # Install development headers for libev
-yum install cmake                           # Install CMake
-yum install boost-devel.x86_64              # Install boost libraries
-yum install python                          # Install python
-yum install python2-pip.noarch              # Install python pip
-pip install ftw                             # Install ftw module
-yum install wget.x86_64                     # Install wget
-yum install expat-devel                     # Install expat
-yum install openssl-devel                   # Install openssl
+sudo yum install gcc gcc-c++ make                # Install build-essential
+sudo yum install libev-devel.x86_64              # Install development headers for libev
+sudo yum install cmake                           # Install CMake
+sudo yum install boost-devel.x86_64              # Install boost libraries
+sudo yum install python2                         # Install python2
+sudo yum install python2-pip.noarch              # Install python2 pip
+sudo pip install ftw                             # Install ftw module
+sudo yum install wget.x86_64                     # Install wget
+sudo yum install expat-devel                     # Install expat
+sudo yum install openssl-devel                   # Install openssl
 ```
 
 or just type
 
 ```
-yum install gcc gcc-c++ make libev-devel.x86_64 cmake boost-devel.x86_64 python python2-pip.noarch wget.x86_64 expat-devel openssl-devel
+sudo yum install gcc gcc-c++ make libev-devel.x86_64 cmake boost-devel.x86_64 python2 python2-pip.noarch wget.x86_64 expat-devel openssl-devel
 pip install ftw
 ```
+
+**Note**: Although the dependencies above need python2, FTW Compatible Tool Suits could works in `python3` without any modification.
 
 #### Download WB tools suits 
 
@@ -134,7 +136,7 @@ Since the components are independent to each other, the detailed build, install 
 WB uses the following libraries.
 
 ```
-FTW
+Framework for Testing WAFs (FTW!)
 
 https://github.com/CRS-support/ftw
 
