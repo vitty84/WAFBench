@@ -110,7 +110,7 @@ wb -t 10 -c 25 -F requests.dat 10.0.1.1:18081
 
 * About the format of request file, please refer to [WB Readme](./wb/README.md)
 
-#### Conduct FTW-Compatible Test
+#### Conduct WAF Correctness Testing
 
 * Please install the dependency library for FTW-compatible-tool first. You can refer to [FTW-compatible-tool Readme](./FTW-compatible-tool/README.md)
 * We recommend you to mount the server's log file to client machine. Assuming we mount it to */mnt/server/logs/error.log* 
