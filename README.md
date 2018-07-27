@@ -81,7 +81,7 @@ or just type
 
 ```
 sudo yum install gcc gcc-c++ make libev-devel.x86_64 cmake boost-devel.x86_64 python2 python2-pip.noarch wget.x86_64 expat-devel openssl-devel
-pip install ftw
+sudo pip install ftw
 ```
 
 **Note**: Although the dependencies above need python2, FTW Compatible Tool Suits could works in `python3` without any modification.
@@ -138,7 +138,7 @@ WB uses the following libraries.
 ```
 Framework for Testing WAFs (FTW!)
 
-https://github.com/CRS-support/ftw
+https://github.com/fastly/ftw
 
 Copyright 2016 Fastly
 Licensed under the Apache License, Version 2.0 (the "License");
