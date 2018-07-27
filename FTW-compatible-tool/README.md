@@ -108,9 +108,10 @@ To save your time, the FTW Test Script --- rtt.sh --- has been introduced for th
 ```
 
 The argument list is as follows:
-* -d *<destination>*: specify your destination address and prot, e.g. -d 10.0.1.44:12701.
-* -y *<input_yaml>*: specify the YAML file or the folder including the YAML files.
-* -l *<input_log>*: specify the modsecurity error.log. Please mount the folder containing your logs first.
-* -o *<output_result>*: specify the output file for logging the testing result.
+* -d *<destination>*: Specify your destination address and prot, e.g. -d 10.0.1.44:12701.
+* -y *<input_yaml>*: Specify the YAML file or the folder including the YAML files.
+* -l *<input_log>*: Specify the modsecurity error.log. Please mount the folder containing your logs first.
+* -o *<output_result>*: Specify the output file for logging the testing result. If this option is not indicated, the result will be output to stdout.
+* -s *<timeout>*: Specify the maximum number of seconds to wait before the socket times out. Default is 1 second.
 * -h: print help and exit  
 
