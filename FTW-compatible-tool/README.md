@@ -8,7 +8,7 @@ FTW-Compatible Tool Suits is wb's extension module, which supports [FTW](https:/
 
 FTW-Compatible Tool suits is a part of [WB](../README.md), the Web Application Firewall Bench tool suits. It contains 4 tools: FTW Generator, FTW Comparator, FTW Log Searcher and a [script](./rtt.sh) to conduct the test conveniently.
 
-* *FTW Generator*: Generate input information for [wb](../wb/README.md);
+* *FTW Generator*: Generate input information for [wb](../wb/README.md) ;
 * *FTW Comparator*: Conduct WB's output comparison with expected conditions;
 * *FTW Log Searcher*: Give out detailed information including raw YAML, request, response and check result for a given test title.
 
@@ -108,10 +108,10 @@ To save your time, the FTW Test Script --- rtt.sh --- has been introduced for th
 ```
 
 The argument list is as follows:
-* -d *<destination>*: Specify your destination address and prot, e.g. -d 10.0.1.44:12701.
-* -y *<input_yaml>*: Specify the YAML file or the folder including the YAML files.
-* -l *<input_log>*: Specify the modsecurity error.log. Please mount the folder containing your logs first.
-* -o *<output_result>*: Specify the output file for logging the testing result. If this option is not indicated, the result will be output to stdout.
-* -s *<timeout>*: Specify the maximum number of seconds to wait before the socket times out. Default is 1 second.
+* -d *\<destination>*: Specify your destination address and prot, e.g. -d 10.0.1.44:12701.
+* -y *\<input_yaml>*: Specify the YAML file or the folder including the YAML files.
+* -l *\<input_log>*: Specify the modsecurity error.log. Please mount the folder containing your logs first.
+* -o *\<output_result>*: Specify the output file for logging the testing result. If this option is not indicated, the result will be output to stdout.
+* -s *\<timeout>*: Specify the maximum number of seconds to wait before the socket times out. Default is 1 second.
 * -h: print help and exit  
 
