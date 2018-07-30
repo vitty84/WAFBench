@@ -113,7 +113,7 @@ wb -t 10 -c 25 -F requests.dat 10.0.1.1:18081
 #### Conduct WAF Correctness Testing
 
 * Please install the dependency library for FTW-compatible-tool first. You can refer to [FTW-compatible-tool Readme](./FTW-compatible-tool/README.md)
-* We recommend you to mount the server's log file to client machine. Assuming we mount it to */mnt/server/logs/error.log* 
+* We recommend you to mount the server's log file to client machine. For some helps, you may refer to [here](https://unix.stackexchange.com/questions/62677/best-way-to-mount-remote-folder). Assuming we mount it to */mnt/server/logs/error.log* 
 * Assuming that the server is at 10.0.1.1:18081 running and we are in folder *FTW-compatible-tool/* we can:
 
 ```

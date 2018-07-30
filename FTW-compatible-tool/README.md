@@ -43,7 +43,7 @@ sudo pip3 install ftw			  # Install the ftw library
 
 * In order to analyze the log of the server, the FTW-compatatible tool will send a dummy request after each normal request. This dummy request is designed to generate a special marker in the log of the server, so we can identify in each trace of log to which request belongs.
 * Then, to generate the marker, we need to add a rule file *1000-WB-Logrule.conf* into Modsecurity ruleset. This rule will cause no influence to the WAF, but just add a special log information when a dummy request is received.
-* To get the server's log conveniently, we recommends you to mount the server's log file to the local test client machine.
+* To get the server's log conveniently, we recommends you to mount the server's log file to the local test client machine. Here is a reference: [link](https://unix.stackexchange.com/questions/62677/best-way-to-mount-remote-folder).
 * What's more, you also need to modify some configuration of the CRS on the server. You can refer to [FTW Readme](https://github.com/fastly/ftw/blob/master/README.md) about how FTW configures the server.
 
 ### FTW Generator
