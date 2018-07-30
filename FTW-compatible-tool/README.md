@@ -61,7 +61,9 @@ The list of arguments:
 
 The FTW Generator accepts FTW-Compatible YAML files and converts it into packaged request file, which can be parsed by WB Sender with *-F \<packaged-request-file\>* directive. 
 
-Note: The argument -f and -F can only use one at the same time.
+**Note**: The argument -f and -F can only use one at the same time.
+
+**Note**: You may find example yaml files in [Regression tests for OWASP CRS v3](https://github.com/SpiderLabs/OWASP-CRS-regressions).
 
 ### FTW Comparator
 
@@ -115,3 +117,4 @@ The argument list is as follows:
 * -s *\<timeout\>*: Specify the maximum number of seconds to wait before the socket times out. Default is 1 second.
 * -h: print help and exit  
 
+**Note**: You could find example yaml files in FTW Generator's note.
