@@ -1,6 +1,6 @@
 [WB Home Page](../README.md)
 
-## Purpose of FTW-Compatible Tool Suits
+# FTW-Compatible Tool Suits
 
 FTW-Compatible Tool Suits is wb's extension module, which supports [FTW](https://github.com/fastly/ftw)(Framework for Testing WAFs) format YAML to conduct WAF correctness testing. As FTW, it uses the OWASP Core Ruleset V3 as a baseline to test rules on a WAF.
 
@@ -8,9 +8,10 @@ FTW-Compatible Tool Suits is wb's extension module, which supports [FTW](https:/
 
 FTW-Compatible Tool suits is a part of [WB](../README.md), the Web Application Firewall Bench tool suits. It contains 4 tools: FTW Generator, FTW Comparator, FTW Log Searcher and a [script](./rtt.sh) to conduct the test conveniently.
 
-* *FTW Generator*: Generate input information for [wb](../wb/README.md) ;
+* *FTW Generator*: Generate input information for [wb](../wb/README.md);
 * *FTW Comparator*: Conduct WB's output comparison with expected conditions;
-* *FTW Log Searcher*: Give out detailed information including raw YAML, request, response and check result for a given test title.
+* *FTW Log Searcher*: Give out detailed information including raw YAML, request, response and check result for a given test title;
+* *Regression Testing Tool (rtt.sh)*: Conduct correctness testing in one line.
 
 ## Installation
 
@@ -117,4 +118,4 @@ The argument list is as follows:
 * -s *\<timeout\>*: Specify the maximum number of seconds to wait before the socket times out. Default is 1 second.
 * -h: print help and exit  
 
-**Note**: You could find example yaml files in FTW Generator's note.
+**Note**: You may find example yaml files in [Regression tests for OWASP CRS v3](https://github.com/SpiderLabs/OWASP-CRS-regressions).
