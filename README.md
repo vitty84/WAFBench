@@ -17,11 +17,11 @@ WAF (Web Application Firewall) Bench (WB) tool suits is designed to verify the c
 
 WAF behaves differently when fed with varied traffic, and making sure that the optimized WAF has the same effort compared with the original one (under different traffic) matters. Some WAF operations will be triggered only if the requests meet some conditions, however, the existing tool, i.e. `ab`, could only customize some fields of a request and can not describe the real traffic completely. In addition, `ab` could only send one request per time, which is inconvenient for testing.
 
-To overcome these two shortcomes, we propose `wb`, an ab-like tool which could send multiple and fully-customized packets in one invoking.
+To overcome these two shortcomings, we propose `wb`, an ab-like tool which could send multiple and fully-customized packets in one invoking.
 
 ### Automatic WAF Correctness Testing
 
-Automatic WAF correctness testing could relieve developers from the heavy and tedious verifing works. There are two important factors for conducting a WAF correctness testing: the testing framework and testcases.
+Automatic WAF correctness testing could relieve developers from the heavy and tedious verifying works. There are two important factors for conducting a WAF correctness testing: the testing framework and testcases.
 
 For the testing framework, we provide a [FTW](https://github.com/fastly/ftw) compatible tool suits which leverages `wb` as its underlying tool. Its performance is better than FTW.
 
