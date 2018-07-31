@@ -13,29 +13,29 @@ import json
 def generate_dummy_request():
     dummy_request_string = ''
     dummy_request_yaml = '''
-    ---
-    meta: 
-        author: "csanders-git"
-        enabled: true
-        name: "Example_Tests"
-        description: "This file contains example tests."
-    tests: 
+---
+  meta: 
+    author: "csanders-git"
+    enabled: true
+    name: "Example_Tests"
+    description: "This file contains example tests."
+  tests: 
+    - 
+      test_title: 920272-3
+      stages: 
         - 
-        test_title: 920272-3
-        stages: 
-            - 
-            stage: 
-                input:
-                dest_addr: "127.0.0.1"
-                port: 80
-                uri: "/WB_Dummy_Request_URI"
-                headers:
-                    User-Agent: "ModSecurity CRS 3 Tests"
-                    Host: "localhost"
-                    Accept: "*/*"
-                output:
-                    log_contains: ""
-    
+          stage: 
+            input:
+              dest_addr: "127.0.0.1"
+              port: 80
+              uri: "/WB_Dummy_Request_URI"
+              headers:
+                  User-Agent: "ModSecurity CRS 3 Tests"
+                  Host: "localhost"
+                  Accept: "*/*"
+            output:
+                  log_contains: ""
+ 
     '''
     rulesets = [ruleset.Ruleset(yaml.load(dummy_request_yaml))]
     http_ua = http.HttpUA()
