@@ -9,21 +9,21 @@
 
 # WAF Bench (WB) Tool Suits
 
-WAF (Web Application Firewall) Bench (WB) tool suits is designed to verify the correctness and measure the performance of WAF.
+WAF (Web Application Firewall) Bench tool suits is designed to verify the correctness and measure the performance of WAF.
 
 ## Motivation
 
-### Real Traffic Testing
+### Real Traffic Performance Testing
 
-WAF behaves differently when fed with varied traffic, and making sure that the optimized WAF has the same effort compared with the original one (under different traffic) matters. Some WAF operations will be triggered only if the requests meet some conditions, however, the existing tool, i.e. `ab`, could only customize some fields of a request and can not describe the real traffic completely. In addition, `ab` could only send one request per time, which is inconvenient for testing.
+The WAF's performance fluctuates greatly as the input traffic varies. The existing tool, i.e. `ab`, can test the perfromance under one customized request, which can not reproduce the real traffic scenario. In addition, `ab` can only customize some fields of the request, which is inconvenient for testing. 
 
-To overcome these two shortcomings, we propose `wb`, an ab-like tool which could send multiple and fully-customized packets in one invoking.
+In order to get the performance experienced by the real custumer and further improve WAF's efficiency, we build `wb`, an ab-like tool, which could send multiple and fully-customized packets in one invoking. Besides, WAF Bench tool suits prvides YAML-based input, which can customize your packet and reproduce multiple different packets easily. 
 
 ### Automatic WAF Correctness Testing
 
-Automatic WAF correctness testing could relieve developers from the heavy and tedious verifying works. There are two important factors for conducting a WAF correctness testing: the testing framework and testcases.
+Automatic WAF correctness testing can relieve developers from the heavy and tedious verifying works. There are two important factors for conducting a WAF correctness testing: the testing framework and testcases.
 
-For the testing framework, we provide a [FTW](https://github.com/fastly/ftw) compatible tool suits which leverages `wb` as its underlying tool. Its performance is better than FTW.
+For the testing framework, we provide a [FTW Compatible Tool](https://github.com/fastly/ftw) which leverages `wb` as its underlying tool. Its performance is better than FTW.
 
 For testcases, we provide several generators for different purposes:
 
@@ -56,7 +56,7 @@ Some software or libraries may be necessary for further build / usage. All of th
 - **libev** library (tested with libev 4.0.0)
 - **CMake** 2.8 or higher (tested with CMake 2.8)
 - **Boost** libraries (tested with 1.53.0)
-- **Python** 2 (tested with 2.7.5) or 3 (tested with 3.4.8)
+- **Python** 2 (tested with 2.7.5) or **Python** 3 (tested with 3.4.8)
 - **pip** python package management tool (tested with 8.1.2)
 - **ftw** python module (tested with ftw 1.1.4)
 - **wget** library (tested with wget-1.14-15.e17_4.1)
