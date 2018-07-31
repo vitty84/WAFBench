@@ -41,7 +41,7 @@ Some software or libraries may be necessary for further build / usage. All of th
 - **libev** library (tested with libev 4.0.0)
 - **CMake** 2.8 or higher (tested with CMake 2.8)
 - **Boost** libraries (tested with 1.53.0)
-- **Python** 2 (tested with 2.75)
+- **Python** 2 (tested with 2.7.5) or 3 (tested with 3.4.8)
 - **pip** python package management tool (tested with 8.1.2)
 - **ftw** python module (tested with ftw 1.1.4)
 - **wget** library (tested with wget-1.14-15.e17_4.1)
@@ -84,7 +84,7 @@ sudo yum install gcc gcc-c++ make libev-devel.x86_64 cmake boost-devel.x86_64 py
 sudo pip install ftw
 ```
 
-**Note**: Although the dependencies above need python2, FTW Compatible Tool Suits could works in `python3` without any modification.
+**Note**: Although the dependencies above need `python2`, FTW Compatible Tool Suits could works in `python3` without any modification.
 
 #### Download WB tools suits 
 
