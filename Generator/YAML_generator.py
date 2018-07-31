@@ -46,6 +46,7 @@ def convert_yaml_directory_to_packets(yaml_directory):
 # @param output_file: file descriptor for output
 is_first_packets = True
 def output_packets(packets, output_file):
+    global is_first_packets
     for packet in packets:
         if not is_first_packets:
             output_file.write("\0")
