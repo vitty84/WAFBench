@@ -6,7 +6,7 @@
     description: "This file contains example tests."
   tests: 
     - 
-      test_title: test-packet
+      test_title: test1
       stages: 
         - 
           stage: 
@@ -19,4 +19,19 @@
                   Host: "localhost"
                   Connection: "close"
             output: 
-              no_log_contains: "test-packet"   
+              no_log_contains: "test1"   
+    - 
+      test_title: test2
+      stages: 
+        - 
+          stage: 
+            input:
+              dest_addr: "127.0.0.1"
+              port: 12701
+              uri: "/index.html"
+              headers:
+                  User-Agent: "ModSecurity CRS 3 Tests"              
+                  Host: "localhost"
+                  Connection: "close"
+            output: 
+              no_log_contains: "test2"   
