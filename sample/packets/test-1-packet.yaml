@@ -17,5 +17,6 @@
               headers:
                   User-Agent: "ModSecurity CRS 3 Tests"              
                   Host: "localhost"
+                  Connection: "close"
             output: 
               no_log_contains: "test-packet"   
