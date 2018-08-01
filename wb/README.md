@@ -127,7 +127,7 @@ python ftw_comparator.py -L <remote_server_log> -o compare_output.dat
 
 ### Examples
 
-There are several examples in `../sample/` to help understanding usage.
+There are several examples in `../example/` to help understanding usage.
 
 - `WB-GET.sh` uses `wb` to conduct GET test.
 - `WB-POST.sh` uses `wb` to conduct POST test.

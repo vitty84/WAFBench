@@ -15,19 +15,19 @@ WAF (Web Application Firewall) Bench tool suits is designed to verify the correc
 
 ### Real Traffic Performance Testing
 
-The WAF's performance fluctuates greatly as the input traffic varies. The existing tool, i.e. `ab`, can test the perfromance under one customized request, which can not reproduce the real traffic scenario. In addition, `ab` can only customize some fields of the request, which is inconvenient for testing. 
+The WAF's performance fluctuates greatly as the input traffic varies. The existing tool, i.e. `ab`, can test the perfromance under only one kind of customized request, which can not reproduce the real traffic scenario. In addition, `ab` can only customize some fields of the request, which is inconvenient for testing. 
 
-In order to get the performance experienced by the real custumer and further improve WAF's efficiency, we build `wb`, an ab-like tool, which could send multiple and fully-customized packets in one invoking. Besides, WAF Bench tool suits prvides YAML-based input, which can customize your packet and reproduce multiple different packets easily. 
+In order to get the performance experienced by the real custumer and further improve WAF's efficiency, we build `wb`, an ab-like tool, which could send multiple and fully-customized packets in one invoking. Besides, WAF Bench tool suits accepts YAML-based input, which can customize your packet and reproduce multiple different packets easily. 
 
 ### Automatic WAF Correctness Testing
 
 Automatic WAF correctness testing can relieve developers from the heavy and tedious verifying works. There are two important factors for conducting a WAF correctness testing: the testing framework and testcases.
 
-For the testing framework, we provide a [FTW Compatible Tool](https://github.com/fastly/ftw) which leverages `wb` as its underlying tool. Its performance is better than FTW.
+For the testing framework, we provide a [FTW Compatible Tool](./FTW-compatible-tool/README.md) which leverages `wb` as its underlying tool. Its performance is better than FTW.
 
 For testcases, we provide several generators for different purposes:
 
-- Generate YAML files from the real traffic logs;
+- Generate YAML files from the real traffic logs.
 - Generate YAML files from the WAF ruleset.
 
 Currently, they are still in development.
@@ -125,6 +125,18 @@ wb -t 10 -c 25 -F requests.dat 10.0.1.1:18081
 
 * About the format of request file, please refer to [WB Readme](./wb/README.md)
 
+It is strongly recommended that use one of generators to generate request file from high level information rather than writing them by own.
+
+Here is a example to use [YAML generator](./Generator/README.md):
+
+```
+cd example
+../Generator/YAML_generator.py packets/test-1-packet.yaml -o /tmp/packet.pkt
+wb -F /tmp/packet.pkt -c 20 -t 5 10.0.1.44:12701
+```
+
+You can also refer to `./example/WB-SEND-PACKET-FROM-YAML.sh`.
+
 #### Conduct WAF Correctness Testing
 
 * Please install the dependency library for FTW-compatible-tool first. You can refer to [FTW-compatible-tool Readme](./FTW-compatible-tool/README.md)
@@ -141,10 +153,10 @@ wb -t 10 -c 25 -F requests.dat 10.0.1.1:18081
 
 Since the components are independent to each other, the detailed build, install and use tutorials are maintained in their own folder. You can access them at:
 
-* Generator
-  * [FTW-Compatible YAML Generator](./FTW-compatible-tool/README.md)
-* WB
-  * [WB](./wb/README.md)
+* [Generator](./Generator/README.md)
+  * FTW-Compatible YAML Generator
+* [wb](./wb/README.md)
+* [FTW-Compatible Tool](./FTW-compatible-tool/README.md)
 
 ## Attributions
 
