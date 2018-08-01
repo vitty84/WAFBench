@@ -4,7 +4,7 @@
 
 APR=apr-1.6.3
 APRUTIL=apr-util-1.6.1
-SITE=http://ftp.meisei-u.ac.jp/mirror/apache/dist//apr
+SITE=http://www-eu.apache.org/dist//apr
 
 all:$(APR) $(APRUTIL) buildapr
 

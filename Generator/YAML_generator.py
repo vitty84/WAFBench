@@ -41,17 +41,28 @@ def convert_yaml_directory_to_packets(yaml_directory):
     ruleset = ftw.util.get_rulesets(yaml_directory, True)
     return convert_ruleset_to_packets(ruleset)
 
-# output packets to a file descriptor
-# @param packets: packets generator
-# @param output_file: file descriptor for output
-is_first_packets = True
-def output_packets(packets, output_file):
-    global is_first_packets
-    for packet in packets:
-        if not is_first_packets:
-            output_file.write("\0")
-        output_file.write(packet)
-        is_first_packets = False
+# make a outputer to output the packets
+# @param packets_file: the path of file that want to output the packets
+# @return: packets outputer
+def make_packets_outputer(packets_file):
+    if not packets_file:
+        packets_file = sys.stdout
+    else:
+        packets_file = open(packets_file, 'wb')    
+    
+    # cannot access the variable in outer closure if the vairiable is read before it's written in inner closure
+    # refer to :https://feilong.me/2012/06/interesting-python-closures
+    is_first_packets = [True,]
+    
+    # output packets
+    # @param packets: packets generator
+    def output(packets):
+        for packet in packets:
+            if not is_first_packets[0]:
+                packets_file.write("\0")
+            packets_file.write(packet)
+            is_first_packets[0] = False
+    return output
 
 # help document
 def help():
@@ -82,17 +93,12 @@ EXAMPLE
 # @param packets_file: output file for packets, default is stdout
 def execute(yaml_files = [], packets_file = ""):
     import sys
-
-    if not packets_file:
-        packets_file = sys.stdout
-    else:
-        packets_file = open(packets_file, 'wb')
-
+    outputer = make_packets_outputer(packets_file)
 
     #read packets
     if not yaml_files:
         packets = convert_yaml_string_to_packets(sys.stdin.read())
-        output_packets(packets, packets_file)
+        outputer(packets)
     #convert all path to abs path
     for i in range(len(yaml_files)):
         import os
@@ -109,7 +115,7 @@ def execute(yaml_files = [], packets_file = ""):
             packets = convert_yaml_directory_to_packets(yaml_file)
         elif os.path.isfile(yaml_file):
             packets = convert_yaml_file_to_packets(yaml_file)
-        output_packets(packets, packets_file)
+        outputer(packets)
 
 #error 
 def error():
@@ -123,6 +129,8 @@ if __name__ == '__main__':
     # if len(sys.argv) == 1:
         # print(help())
         # sys.exit(0)
+    if sys.argv[0] == "python" or sys.argv[0] == "python3":
+        sys.argv = sys.argv[1:]
 
     packets_file = ""
     yaml_files = []
