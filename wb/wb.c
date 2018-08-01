@@ -343,7 +343,7 @@ char *g_header_to_sent;             /* to store the generated header to be sent 
 char *g_new_header;                 /* to store the generated prefix                    */
 char *g_request_end = NULL;         /* store the end position of request header         */
 apr_size_t g_new_header_len = 0;    /* length of generated new header                   */
-apr_size_t g_header_len_MAX = 8192; /* max length of generated new header               */
+apr_size_t g_header_len_MAX = 65535; /* max length of generated new header               */
 char **g_sub_string;                /* to store the sub_string that's to be replaced    */
 apr_size_t g_sub_string_num = 0;    /* number of sub strings                            */
 apr_size_t g_sub_string_num_MAX=128;/* maximum number of sub strings                    */
