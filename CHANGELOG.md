@@ -7,12 +7,15 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 ## [Unreleased]
 ### Added
 - [FTW Compatible Tool Suits](./FTW-compatible-tool/README.md) to support FTW testing.
-- `./sample` adds a demo of wb showing how to send raw HTTP requests and serveral demos for FTW Compatible Tool Suits.
+- [`./Generator`](./Generator/README.md) contains some generators to generate `wb` format packets from high level information. Currently there is only a `YAML_generator.py`.
+- `./example` adds several demos for wb and FTW Compatible Tool Suits.
 - Add tutorial of conducting FTW testing in [wb's README](./wb/README.md).
-- [README.md](./README.md) adds infos about FTW Compatible Tool Suits.
+- [README.md](./README.md) adds infos about FTW Compatible Tool Suits and YAML generator.
+- [README.md](./README.md) adds attributions to [FTW](https://github.com/fastly/ftw)
 
 ### Changed
-- Revise dependency instructions in [README.md](./README.md)
+- Revise motivations and dependency instructions in [README.md](./README.md)
+- Rename `./sample` to `./example` 
 
 ## [1.0.0] - 2018-07-16
 ### Added
