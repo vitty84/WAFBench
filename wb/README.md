@@ -317,7 +317,7 @@ There are several examples in `../sample/` to help understanding usage.
 
 ## Packet Format
 
-Note: Because handwritten packets are error-prone, we highly recommend you to use generators in [`Generator/`](../Generator).
+**Note**: Because handwritten packets are error-prone, we highly recommend you to use generators in [`Generator/`](../Generator).
 
 This section describes the format of the packet file used in wb's `-F` option.
 
