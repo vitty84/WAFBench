@@ -1077,6 +1077,24 @@ void print_progress(int forced_print )
 /* parse the packet strings */
 static ulong parse_pktfile(char *pkt_data, struct _g_pkt_array_ *pkt_array);
 
+/* compare to packet by time to send*/
+int compare_pkt_by_time_to_send(const void * pkt1,const void * pkt2) {
+    const struct _g_pkt_array_ * ppkt1 = (const struct _g_pkt_array_ *)pkt1;
+    const struct _g_pkt_array_ * ppkt2 = (const struct _g_pkt_array_ *)pkt2;
+
+    if (ppkt1->pkt_time_to_send < ppkt2->pkt_time_to_send) {
+        return -1;
+    } else if (ppkt1->pkt_time_to_send > ppkt2->pkt_time_to_send) {
+        return 1;
+    } else if (ppkt1->pkt_data < ppkt2->pkt_data) {
+        return -1;
+    } else if (ppkt1->pkt_data > ppkt2->pkt_data) {
+        return 1;
+    } else {
+        return 0;
+    }
+}
+
 /* read packets from file, save contents and length to global variables */
 static apr_status_t open_pktfile(const char *pfile)
 {
@@ -1133,6 +1151,10 @@ static apr_status_t open_pktfile(const char *pfile)
     // allocate packet array memory and parse the packets again to save them
     g_pkt_array = xcalloc(g_MAX_PKT_COUNT, sizeof(struct _g_pkt_array_));
     g_pkt_count = parse_pktfile(g_pkt_data, g_pkt_array);
+    //sort pkt by time
+    if (g_pkt_count > 1) {
+        qsort(g_pkt_array, g_pkt_count, sizeof(struct _g_pkt_array_), compare_pkt_by_time_to_send);
+    }
     if (g_pkt_count > 1)
         nolength = 1; // no constant packet length if g_pkt_count >= 2
 
