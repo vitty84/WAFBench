@@ -127,7 +127,7 @@ wb -t 10 -c 25 -F requests.dat 10.0.1.1:18081
 
 It is strongly recommended that use one of generators to generate request file from high level information rather than writing them by own.
 
-Here is a example to use [YAML generator](./Generator/README.md):
+Here is an example to use [YAML generator](./Generator/README.md):
 
 ```
 cd example
