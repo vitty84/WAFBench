@@ -301,7 +301,7 @@ struct data {
 #ifdef _WAF_BENCH_  // globals and definitions for WAF_BENCH
 
 #define WAF_BENCH_VERSION   "1.0.0" /* start from version 0.1.0, now it's 1.0.0           */
-#define WAF_BENCH_SUBVERSION "2018-07-16-08:48:20" /* subversion, using git commit time */
+#define WAF_BENCH_SUBVERSION "2018-08-02-11:05:38" /* subversion, using git commit time */
 #define INI_FILENAME        "wb.ini"/* ini file filename                                */
 #define DEFAULT_TEST_TIME   5       /* default test time in seconds                     */
 #define MB                  1000000/* Million Bytes                                    */
@@ -343,7 +343,7 @@ char *g_header_to_sent;             /* to store the generated header to be sent 
 char *g_new_header;                 /* to store the generated prefix                    */
 char *g_request_end = NULL;         /* store the end position of request header         */
 apr_size_t g_new_header_len = 0;    /* length of generated new header                   */
-apr_size_t g_header_len_MAX = 65535; /* max length of generated new header               */
+apr_size_t g_header_len_MAX = 8192; /* max length of generated new header               */
 char **g_sub_string;                /* to store the sub_string that's to be replaced    */
 apr_size_t g_sub_string_num = 0;    /* number of sub strings                            */
 apr_size_t g_sub_string_num_MAX=128;/* maximum number of sub strings                    */
@@ -1434,6 +1434,10 @@ void save_logfile (char * buf, apr_size_t buflen)
     apr_size_t saved_len = 0;
     apr_size_t next_save_length;
 
+    if (!g_save_file_fd) {
+        return;
+    }
+
     // if exceeding max file size, rewind it to the beginning
     g_saved_bytes += need_save_length;
     if (g_MAX_FILE_SIZE > 0 && g_saved_bytes >= g_MAX_FILE_SIZE) {
@@ -1594,12 +1598,15 @@ static void write_request(struct connection * c)
                 int new_estimated_len;
                 g_new_header_len = strlen(g_new_header);
                 // assume each sub_string appears no than 10 times with less than 10-digits seq
-                new_estimated_len = g_new_header_len + (g_request_end - request_pos) + g_sub_string_num * 10 * 10 + 1;
+                new_estimated_len = g_new_header_len + (g_request_end - request_pos) + reqlen + g_sub_string_num * 10 * 10 + 1;
                 if (new_estimated_len > g_header_len_MAX) {
                     g_header_len_MAX = new_estimated_len; 
                     char *new_header;
                     new_header = xmalloc(g_header_len_MAX);
-                    if (g_new_header) free(g_new_header);
+                    if (g_new_header) {
+                        memcpy(new_header, g_new_header, g_new_header_len);
+                        free(g_new_header);
+                    }
                     g_new_header = new_header;
                 }
                 // copy the remaining header bytes  
