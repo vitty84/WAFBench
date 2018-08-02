@@ -23,7 +23,7 @@ In order to get the performance experienced by the real custumer and further imp
 
 Automatic WAF correctness testing can relieve developers from the heavy and tedious verifying works. There are two important factors for conducting a WAF correctness testing: the testing framework and testcases.
 
-For the testing framework, we provide a [FTW Compatible Tool](./FTW-compatible-tool/README.md) which leverages `wb` as its underlying tool. Its performance is better than FTW.
+For the testing framework, we provide a `FTW-Compatible Tool` which leverages `wb` as its underlying tool. Its performance is better than FTW.
 
 For testcases, we provide several generators for different purposes:
 
@@ -69,7 +69,7 @@ The WB tool suites are developed and tested under CentOS 7 (Linux version 3.10, 
 
 ### Cheat Sheet
 
-This tutorial is based on CentOS 7 (Linux version 3.10, AMD 64 architecture) but other Linux distributions is OK since there is no dependencies on CentOS.
+This tutorial is based on CentOS 7 (Linux version 3.10, AMD 64 architecture). WB also can work on other Linux distribution since there is no dependencies on CentOS.
 
 #### Install Dependencies
 
@@ -107,7 +107,7 @@ Just clone this repo to your machines.
 
 #### Install WB
 
-Please refer to [WB Readme](./wb/README.md)
+Please refer to [wb Readme](./wb/README.md)
 
 #### Conduct Performance Test / AB-like Test
 
@@ -123,7 +123,7 @@ Or send requests from a file such as *requests.dat*:
 wb -t 10 -c 25 -F requests.dat 10.0.1.1:18081
 ```
 
-* About the format of request file, please refer to [WB Readme](./wb/README.md)
+* About the format of request file, please refer to [wb Readme](./wb/README.md)
 
 It is strongly recommended that use one of generators to generate request file from high level information rather than writing them by own.
 
