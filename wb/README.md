@@ -1,12 +1,3 @@
-```
- __     __     ______     ______      ______     ______     __   __     ______     __  __    
-/\ \  _ \ \   /\  __ \   /\  ___\    /\  == \   /\  ___\   /\ "-.\ \   /\  ___\   /\ \_\ \   
-\ \ \/ ".\ \  \ \  __ \  \ \  __\    \ \  __<   \ \  __\   \ \ \-.  \  \ \ \____  \ \  __ \  
- \ \__/".~\_\  \ \_\ \_\  \ \_\       \ \_____\  \ \_____\  \ \_\\"\_\  \ \_____\  \ \_\ \_\ 
-  \/_/   \/_/   \/_/\/_/   \/_/        \/_____/   \/_____/   \/_/ \/_/   \/_____/   \/_/\/_/ 
-                                                                                             
-```
-
 # WAF-Bench (wb): a benchmarking tool for Web Application Firewall (WAF)
 
 wb is based on the latest ApacheBench (ab) and add several new features for WAF testing. 
@@ -127,7 +118,7 @@ python ftw_comparator.py -L <remote_server_log> -o compare_output.dat
 
 ### Examples
 
-There are several examples in `../sample/` to help understanding usage.
+There are several examples in `../example/` to help understanding usage.
 
 - `WB-GET.sh` uses `wb` to conduct GET test.
 - `WB-POST.sh` uses `wb` to conduct POST test.

@@ -301,7 +301,7 @@ struct data {
 #ifdef _WAF_BENCH_  // globals and definitions for WAF_BENCH
 
 #define WAF_BENCH_VERSION   "1.0.0" /* start from version 0.1.0, now it's 1.0.0           */
-#define WAF_BENCH_SUBVERSION "2018-07-16-08:48:20" /* subversion, using git commit time */
+#define WAF_BENCH_SUBVERSION "2018-08-02-11:05:38" /* subversion, using git commit time */
 #define INI_FILENAME        "wb.ini"/* ini file filename                                */
 #define DEFAULT_TEST_TIME   5       /* default test time in seconds                     */
 #define MB                  1000000/* Million Bytes                                    */
@@ -1077,6 +1077,24 @@ void print_progress(int forced_print )
 /* parse the packet strings */
 static ulong parse_pktfile(char *pkt_data, struct _g_pkt_array_ *pkt_array);
 
+/* compare to packet by time to send*/
+int compare_pkt_by_time_to_send(const void * pkt1,const void * pkt2) {
+    const struct _g_pkt_array_ * ppkt1 = (const struct _g_pkt_array_ *)pkt1;
+    const struct _g_pkt_array_ * ppkt2 = (const struct _g_pkt_array_ *)pkt2;
+
+    if (ppkt1->pkt_time_to_send < ppkt2->pkt_time_to_send) {
+        return -1;
+    } else if (ppkt1->pkt_time_to_send > ppkt2->pkt_time_to_send) {
+        return 1;
+    } else if (ppkt1->pkt_data < ppkt2->pkt_data) {
+        return -1;
+    } else if (ppkt1->pkt_data > ppkt2->pkt_data) {
+        return 1;
+    } else {
+        return 0;
+    }
+}
+
 /* read packets from file, save contents and length to global variables */
 static apr_status_t open_pktfile(const char *pfile)
 {
@@ -1133,6 +1151,10 @@ static apr_status_t open_pktfile(const char *pfile)
     // allocate packet array memory and parse the packets again to save them
     g_pkt_array = xcalloc(g_MAX_PKT_COUNT, sizeof(struct _g_pkt_array_));
     g_pkt_count = parse_pktfile(g_pkt_data, g_pkt_array);
+    //sort pkt by time
+    if (g_pkt_count > 1) {
+        qsort(g_pkt_array, g_pkt_count, sizeof(struct _g_pkt_array_), compare_pkt_by_time_to_send);
+    }
     if (g_pkt_count > 1)
         nolength = 1; // no constant packet length if g_pkt_count >= 2
 
@@ -1175,7 +1197,7 @@ static ulong parse_pktfile(char *pkt_data, struct _g_pkt_array_ *pkt_array)
             // remove '\0' by +1
             parsed_bytes += pkt->pkt_length + 1;
             if (pkt->pkt_length < 4){
-                if (!pkt_array && pkt->pkt_data[0] != '0' && pkt->pkt_data[0] != '\r' && pkt->pkt_data[0] != 'n' ) 
+                if (!pkt_array && pkt->pkt_data[0] != '\0' && pkt->pkt_data[0] != '\r' && pkt->pkt_data[0] != '\n' ) 
                     fprintf(stderr, "Warning: this packet (%s) does not have a valid packet size(%d), ignore it!\n", 
                             pkt->pkt_data,pkt->pkt_length);
             }
@@ -1412,6 +1434,10 @@ void save_logfile (char * buf, apr_size_t buflen)
     apr_size_t saved_len = 0;
     apr_size_t next_save_length;
 
+    if (!g_save_file_fd) {
+        return;
+    }
+
     // if exceeding max file size, rewind it to the beginning
     g_saved_bytes += need_save_length;
     if (g_MAX_FILE_SIZE > 0 && g_saved_bytes >= g_MAX_FILE_SIZE) {
@@ -1572,12 +1598,15 @@ static void write_request(struct connection * c)
                 int new_estimated_len;
                 g_new_header_len = strlen(g_new_header);
                 // assume each sub_string appears no than 10 times with less than 10-digits seq
-                new_estimated_len = g_new_header_len + (g_request_end - request_pos) + g_sub_string_num * 10 * 10 + 1;
+                new_estimated_len = g_new_header_len + (g_request_end - request_pos) + reqlen + g_sub_string_num * 10 * 10 + 1;
                 if (new_estimated_len > g_header_len_MAX) {
                     g_header_len_MAX = new_estimated_len; 
                     char *new_header;
                     new_header = xmalloc(g_header_len_MAX);
-                    if (g_new_header) free(g_new_header);
+                    if (g_new_header) {
+                        memcpy(new_header, g_new_header, g_new_header_len);
+                        free(g_new_header);
+                    }
                     g_new_header = new_header;
                 }
                 // copy the remaining header bytes  
