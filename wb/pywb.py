@@ -183,7 +183,7 @@ def execute(argument):
     real_command = " ".join(argument)
     print(real_command)
     import os
-    # os.system(real_command)
+    os.system(real_command)
 
 if __name__ == '__main__':
     import sys
