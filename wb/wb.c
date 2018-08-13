@@ -301,7 +301,7 @@ struct data {
 #ifdef _WAF_BENCH_  // globals and definitions for WAF_BENCH
 
 #define WAF_BENCH_VERSION   "1.0.0" /* start from version 0.1.0, now it's 1.0.0           */
-#define WAF_BENCH_SUBVERSION "2018-08-02-11:05:38" /* subversion, using git commit time */
+#define WAF_BENCH_SUBVERSION "2018-08-13-11:55:44" /* subversion, using git commit time */
 #define INI_FILENAME        "wb.ini"/* ini file filename                                */
 #define DEFAULT_TEST_TIME   5       /* default test time in seconds                     */
 #define MB                  1000000/* Million Bytes                                    */
@@ -1524,7 +1524,7 @@ static void write_request(struct connection * c)
             int hdr_delim = 0;
             int header_len = 0;
             
-            if (g_opt_prefix || g_sub_string_num) {  // need to add prefix
+            if (g_add_connection_close || g_opt_prefix || g_sub_string_num) {  // packet need to be modify
                 static ulong req_sent = 0;
 
                 // keep original request length when adding seq#
@@ -1654,7 +1654,22 @@ static void write_request(struct connection * c)
                 reqlen = g_new_header_len;
 
 	            char *connection_hdr;
-	            connection_hdr = strcasestr(g_new_header,"\nConnection:");
+	            connection_hdr = strcasestr(g_new_header,"\r\nConnection:");
+
+                //if always connection:close, remove old connection:type
+                if (g_add_connection_close > 1 && connection_hdr != NULL ) {     
+                    char * connection_hdr_end = strstr(connection_hdr + sizeof("\r\nConnection:") - 1, "\r\n");
+                    int moved_bytes = g_new_header_len - (connection_hdr - g_new_header);
+                    int j;
+
+                    g_new_header_len = g_new_header_len - (connection_hdr_end - connection_hdr);
+                    header_len = header_len - (connection_hdr_end - connection_hdr);
+
+                    for (j = 0; j < moved_bytes; j++) {
+                        *connection_hdr++ = *connection_hdr_end ++;
+                    }
+                    connection_hdr = NULL;
+                }
 
 	            // add connection:close header to the request
 	            if (g_add_connection_close && (connection_hdr == NULL || connection_hdr >= g_request_end)) {
@@ -3498,7 +3513,7 @@ PARSE_ARGS:
             "Z:f:"
 #endif
 #ifdef _WAF_BENCH_ // adding more options 0-9,aFINRDUYWEGKQ 
-            "Y:a:o:F:j:J:O:R:D:U:Y:W:E:G:Q:K0123456789"
+            "Y:a:o:F:j:J:O:R:D:U:Y:W:E:G:Q:K012:3456789"
 #endif // _WAF_BENCH_, adding more options 0-9,aFINRDUYWEGKQ 
             ,&c, &opt_arg)) == APR_SUCCESS) {
         switch (c) {
@@ -3510,7 +3525,7 @@ PARSE_ARGS:
                 g_add_localhost = 0;
                 break;
             case '2': // Don't append Connection:close if
-                g_add_connection_close = 0;
+                g_add_connection_close = atoi(opt_arg);
                 break;
             case '3': // microsec-granularity in output-results
                 // by default, it's not microsec-granularity
