@@ -301,7 +301,7 @@ struct data {
 #ifdef _WAF_BENCH_  // globals and definitions for WAF_BENCH
 
 #define WAF_BENCH_VERSION   "1.0.0" /* start from version 0.1.0, now it's 1.0.0           */
-#define WAF_BENCH_SUBVERSION "2018-08-13-11:55:44" /* subversion, using git commit time */
+#define WAF_BENCH_SUBVERSION "2018-08-13-04:15:18" /* subversion, using git commit time */
 #define INI_FILENAME        "wb.ini"/* ini file filename                                */
 #define DEFAULT_TEST_TIME   5       /* default test time in seconds                     */
 #define MB                  1000000/* Million Bytes                                    */
@@ -1621,14 +1621,15 @@ static void write_request(struct connection * c)
 
 
                 // mark its end so that we can use strstr
-                g_new_header[g_new_header_len] = 0; 
+                g_new_header[g_new_header_len] = 0;
+                char * new_request_end = g_new_header + g_new_header_len;
                 
                 // enumerate to process all sub_strings
                 int i;
                 for (i = 0; i < g_sub_string_num; i ++) {
                     char *sub;
                     while (sub = strstr(g_new_header, g_sub_string[i])) { 
-                        if (sub - g_request_end > 0)
+                        if (sub - new_request_end > 0)
                             break;
 
                         char *copy_pos;
@@ -1655,10 +1656,21 @@ static void write_request(struct connection * c)
 
 	            char *connection_hdr;
 	            connection_hdr = strcasestr(g_new_header,"\r\nConnection:");
+                if (connection_hdr == NULL) {
+                    connection_hdr = strcasestr(g_new_header,"\n\nConnection:");
+                }
 
                 //if always connection:close, remove old connection:type
-                if (g_add_connection_close > 1 && connection_hdr != NULL ) {     
+                if (g_add_connection_close == 2 && connection_hdr != NULL ) {
                     char * connection_hdr_end = strstr(connection_hdr + sizeof("\r\nConnection:") - 1, "\r\n");
+                    if (connection_hdr_end == NULL) {
+                        connection_hdr_end = strstr(connection_hdr + sizeof("\n\nConnection:") - 1, "\n\n");
+                    }
+                    
+                    if (connection_hdr_end == NULL || connection_hdr_end > new_request_end) {
+                        break;
+                    }
+
                     int moved_bytes = g_new_header_len - (connection_hdr - g_new_header);
                     int j;
 
@@ -1672,7 +1684,7 @@ static void write_request(struct connection * c)
                 }
 
 	            // add connection:close header to the request
-	            if (g_add_connection_close && (connection_hdr == NULL || connection_hdr >= g_request_end)) {
+	            if (g_add_connection_close && (connection_hdr == NULL || connection_hdr >= new_request_end)) {
 	                char conn_str[]="\r\nConnection: Close";
 	                int conn_str_len = sizeof(conn_str) - 1;
 	                char *dst = g_new_header+g_new_header_len+conn_str_len;
@@ -3306,8 +3318,9 @@ static void usage(const char *progname)
     fprintf(stderr, "    -W stats_num    Window of stats, number of stats values (default=50000)\n");
     fprintf(stderr, "    -1              (for testing) Don't append Host:localhost if absent (\n");
     fprintf(stderr, "                    default to add)\n");
-    fprintf(stderr, "    -2              (for testing) Don't append Connection:close if absent (\n");
-    fprintf(stderr, "                    default to add)\n");
+    fprintf(stderr, "    -2 option       (for testing)  Don't append Connection:close if option is 0, \n");
+    fprintf(stderr, "                    Append connection:close to those packets without connection attribution if option is 1,\n");
+    fprintf(stderr, "                    Append or replace connection attribution to close for any packets if option is 2\n");
     fprintf(stderr, "    -3              (for testing) Use micro-second granularity in output,\n");
     fprintf(stderr, "                    default disabled\n");
 /*
@@ -3524,8 +3537,13 @@ PARSE_ARGS:
             case '1': // Don't append Host:localhost if it is set
                 g_add_localhost = 0;
                 break;
-            case '2': // Don't append Connection:close if
+            case '2': // Don't append Connection:close if option is 0, 
+                      // Append connection:close to those packets without connection attribution if option is 1,
+                      // Append or replace connection attribution to close for any packets if option is 2
                 g_add_connection_close = atoi(opt_arg);
+                if (g_add_connection_close < 0 || g_add_connection_close > 2) {
+                    err("Error option to -2\n");
+                }
                 break;
             case '3': // microsec-granularity in output-results
                 // by default, it's not microsec-granularity
