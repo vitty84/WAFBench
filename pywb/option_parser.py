@@ -1,15 +1,20 @@
 
 from pywb_utility import *
 
-class options_parser(object):
+class parser(object):
+    def parse(self, options):
+        return 0
+    def dump(self):
+        return []
+    def help(self):
+        return "            "
+
+class options_parser(parser):
+    def __init__(self, enhance_options):
+        self.__enhance_options = enhance_options
     def parse(self, options):
         acceptable_options = "n:c:t:s:b:T:p:u:v:lrkVhwiIx:y:z:C:H:P:A:g:X:de:SqB:m:Z:f:Y:a:o:F:j:J:O:R:D:U:Y:W:E:G:Q:K012:3456789"
-        trigger_options = {
-            "-F": packet_file_enhance("default.pkt"),
-            "-p": upload_file_enhance("-p"),
-            "-u": upload_file_enhance("-u"),
-            }
-
+        
         single_option = []
         double_option = []
 
@@ -17,8 +22,8 @@ class options_parser(object):
         while i < len(options):
             option = options[i]
             i+=1
-            if option in trigger_options:
-                i += trigger_options[option].parse(options[i:])
+            if option in self.__enhance_options:
+                i += self.__enhance_options[option].parse(options[i:])
                 continue
             
             if option[0] != "-":
@@ -44,7 +49,7 @@ class options_parser(object):
         self.__options = [get_wb_path()]
 
         #dump all trigger
-        for _, trigger in trigger_options.items():
+        for _, trigger in self.__enhance_options.items():
             self.__options += trigger.dump()
 
         self.__options += double_option
@@ -55,7 +60,7 @@ class options_parser(object):
     def dump(self):
         return self.__options
 
-class packet_file_enhance(options_parser):
+class packet_file_enhance(parser):
     import YAML_convert
     import PKT_convert
     
@@ -98,12 +103,11 @@ class packet_file_enhance(options_parser):
 
         return ["-F", self.__packets_file]
 
-    @staticmethod
-    def help():
-        help_string = "    -F pkt_files    support \"%s\" or direcotries that include these kind of files\n"%(",".join(packet_file_enhance.converters.keys()))
+    def help(self):
+        help_string = "    -F pkt_files    support \"%s\" or direcotries that include these kind of files\n"%(",".join(packet_file_enhance.__converters.keys()))
         return help_string
 
-class upload_file_enhance(options_parser):
+class upload_file_enhance(parser):
     
     def __init__(self, option):
         self.__option = option
@@ -128,10 +132,32 @@ class upload_file_enhance(options_parser):
 
         _,file_ext = os.path.splitext(post_file)
         file_ext = file_ext.lower()
-        
+
         content_type = "application/octet-stream"
         if file_ext in mime_type_dict:
             content_type = mime_type_dict[file_ext]
         
         return [self.__option, post_file , "-T", content_type]
             
+    def help(self):
+        if self.__option == "-p":
+            return "    -p postfile     File containing data to POST. Content-Type will be detected by file ext,\n"+\
+                   "                    the Content-Type will be application/actet-stream if file ext cannot be identified\n"
+        elif self.__option == "-u":
+            return "    -u putfile      File containing data to PUT. Content-Type will be detected by file ext,\n"+\
+                   "                    the Content-Type will be application/actet-stream if file ext cannot be identified\n"
+
+class content_type_help_modify(parser):
+    def __init__(self):
+        self.__content_type = None
+    def help(self):
+        return "    -T content-type Content-type header to use for POST/PUT data, eg.\n"+\
+               "                    'application/x-www-form-urlencoded'\n"+\
+               "                    Default is 'text/plain', it's not compatible with -p and -u.\n"
+    def parse(self, options):
+        self.__content_type = options[0]
+        return 1
+    def dump(self):
+        if self.__content_type:
+            return ["-T", self.__content_type]
+        return []
