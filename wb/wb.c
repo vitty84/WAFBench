@@ -3303,9 +3303,9 @@ static void usage(const char *progname)
 #endif
 
 #ifdef _WAF_BENCH_ // print waf-bench new usage
-    fprintf(stderr,"\033[1;33m"); // Yellow
+    fprintf(stderr,"\033[1;33m\n"); // Yellow
     fprintf(stderr, "New options for wb:\n");
-    fprintf(stderr,"\033[0m"); // no color
+    fprintf(stderr,"\033[0m\n"); // no color
     fprintf(stderr, "    -F pkt_file     File of packet seperated by \\0 or a leading size\n");
     fprintf(stderr, "                    note: \"-n\" now is the total times to be sent for pkt_file\n");
     fprintf(stderr, "    -G max_size     Maximum output file size (in MB, default=0:unlimited)\n");
