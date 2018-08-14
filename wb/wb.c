@@ -301,7 +301,7 @@ struct data {
 #ifdef _WAF_BENCH_  // globals and definitions for WAF_BENCH
 
 #define WAF_BENCH_VERSION   "1.0.0" /* start from version 0.1.0, now it's 1.0.0           */
-#define WAF_BENCH_SUBVERSION "2018-08-14-07:18:05" /* subversion, using git commit time */
+#define WAF_BENCH_SUBVERSION "2018-08-14-11:46:05" /* subversion, using git commit time */
 #define INI_FILENAME        "wb.ini"/* ini file filename                                */
 #define DEFAULT_TEST_TIME   5       /* default test time in seconds                     */
 #define MB                  1000000/* Million Bytes                                    */
@@ -3481,7 +3481,7 @@ int main(int argc, const char * const argv[])
     auth = "";
     proxyhost = "";
     hdrs = "";
-
+    setbuf(stdout, NULL);
     apr_app_initialize(&argc, &argv, NULL);
     atexit(apr_terminate);
     apr_pool_create(&cntxt, NULL);
