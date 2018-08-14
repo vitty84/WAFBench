@@ -8,7 +8,7 @@ def error(error_message):
 
 
 def get_wb_path():
-    search_positions = ["./wb", "/bin/wb", "/usr/bin/wb"]
+    search_positions = ["./wb", "../wb/wb", "/bin/wb", "/usr/bin/wb"]
     import os
     for position in search_positions:
         if os.path.exists(position):
