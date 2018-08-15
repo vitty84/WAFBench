@@ -162,7 +162,7 @@ if __name__ == '__main__':
             i += 1
             if i >= len(sys.argv):
                 error()
-            packets_files = sys.argv[i]
+            packets_file = sys.argv[i]
         else:
             packets_files.append(sys.argv[i])
         i += 1
