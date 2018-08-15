@@ -21,12 +21,18 @@ def execute(argument, customized_options = {}, customized_filters = []):
     
     #enhance parse option
     import option_parser
-    enhance_options = {
-            "-F": option_parser.packet_file_enhance("default.pkt"),
 
-            "-p": option_parser.upload_file_enhance("-p"),
-            "-u": option_parser.upload_file_enhance("-u"),
-            "-T": option_parser.content_type_help_modify(),
+    packet_file_enchance = option_parser.packet_file_enhance("default.pkt")
+    content_type_modify = option_parser.content_type_modify()
+    post_file_enchande = option_parser.upload_file_enhance("-p", content_type_modify)
+    put_file_enchande = option_parser.upload_file_enhance("-u", content_type_modify)
+
+    enhance_options = {
+            "-F": packet_file_enchance,
+
+            "-p": post_file_enchande,
+            "-u": put_file_enchande,
+            "-T": content_type_modify,
             
             }
 

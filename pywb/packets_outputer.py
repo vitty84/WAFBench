@@ -15,6 +15,8 @@ class packets_outputer(object):
     # output packets
     # @param packets: packets generator
     def __call__(self, packets):
+        if packets is None:
+            return
         for packet in packets:
             if not self.__is_first_packets:
                 self.__packets_file.write("\0")

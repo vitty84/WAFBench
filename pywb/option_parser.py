@@ -82,25 +82,8 @@ class packet_file_enhance(parser):
     def dump(self):
         if len(self.__read_packets_path) == 0:
             return []
-
-        import packets_outputer
-        outputer = packets_outputer.packets_outputer(self.__packets_file)
-
-        for path in self.__read_packets_path:
-            import os
-            path = os.path.abspath(path)
-            if not os.path.exists(path):
-                error(path + " is not exist")
-            if os.path.isdir(path):
-                for _, converter in packet_file_enhance.__converters.items():
-                    converter(path, outputer)
-            else:
-                _, file_ext = os.path.splitext(path)
-                file_ext = file_ext.lower()
-                if file_ext not in packet_file_enhance.__converters:
-                    error(path + "'s extension " + file_ext + " isn't supported")
-                packet_file_enhance.__converters[file_ext](path, outputer)
-
+        import converter
+        converter.execute(self.__read_packets_path, self.__packets_file)
         return ["-F", self.__packets_file]
 
     def help(self):
@@ -109,9 +92,10 @@ class packet_file_enhance(parser):
 
 class upload_file_enhance(parser):
     
-    def __init__(self, option):
+    def __init__(self, option, content_type_modify):
         self.__option = option
         self.__post_files = []
+        self.__content_type_modify = content_type_modify
     def parse(self, options):
         if len(options) > 0:
             self.__post_files.append(options[0])
@@ -120,6 +104,9 @@ class upload_file_enhance(parser):
     def dump(self):
         if len(self.__post_files) == 0:
             return []
+        #if Content-Type is set, we don't need automatic inferring
+        if self.__content_type_modify.is_set():
+            return [self.__option, post_file]
 
         #current only support one file at once post request
         if len(self.__post_files) > 1:
@@ -147,7 +134,7 @@ class upload_file_enhance(parser):
             return "    -u putfile      File containing data to PUT. Content-Type will be detected by file ext,\n"+\
                    "                    the Content-Type will be application/actet-stream if file ext cannot be identified\n"
 
-class content_type_help_modify(parser):
+class content_type_modify(parser):
     def __init__(self):
         self.__content_type = None
     def help(self):
@@ -157,6 +144,8 @@ class content_type_help_modify(parser):
     def parse(self, options):
         self.__content_type = options[0]
         return 1
+    def is_set(self):
+        return self.__content_type != None
     def dump(self):
         if self.__content_type:
             return ["-T", self.__content_type]
