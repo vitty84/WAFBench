@@ -42,5 +42,46 @@ Some software or libraries may be necessary for have been listed in [WB Home Pag
 ### Develop
 Two interfaces are provided to developer to customize new features. 
 ```
+# option_parser.py
+#
+# INTERFACE for option parsing
+# implement this interface and bind its instance to an option
+# this instance will be called when the option meet
+class parser(object):
+    # parse option
+    # @param options: the parameters of the triggered option 
+    # @return: the number of parameters of this parser need
+    def parse(self, options):
+        return 0
+    
+    # dump the option for wb
+    # @return: the options that will be passed to wb
+    def dump(self):
+        return []
 
+    # help document
+    # @return: the help document for the option bound by this instance 
+    def help(self):
+        return " "
+
+# output_filter.py
+#
+# INTERFACE for processing of the stderr and stdout of wb
+# line by line to process the stderr and stdout of wb
+class filter(object):
+    #process one line
+    # @param line: one line output from stderr and stdout of wb
+    def __call__(self, line):
+        pass
+
+#implement some class for your features
+class my_parser(parser):
+    pass
+
+class my_filter(filter):
+    pass
+
+
+#install your instance into wb
+pywb.execute(sys.argv[1:], {"my_option" : my_parser()}, [my_filter()])
 ```

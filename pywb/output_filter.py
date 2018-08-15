@@ -1,9 +1,14 @@
 
+# INTERFACE for processing of the stderr and stdout of wb
+# line by line to process the stderr and stdout of wb
 class filter(object):
+    #process one line
+    # @param line: one line output from stderr and stdout of wb
     def __call__(self, line):
         pass
 
-
+# IMPLEMENT line printer
+# print the line
 class simple_printer(filter):
     def __call__(self, line):
         if line != None:  
@@ -11,7 +16,8 @@ class simple_printer(filter):
             sys.stdout.write(line)
         return line
 
-
+# IMPLEMENT document reviser
+# revise some help document, because the option parsers will modify some help document
 class help_document_revise(filter):
     def __init__(self, enhance_options = {}):
         self.__buffer = ""

@@ -21,6 +21,8 @@ class parser(object):
     def help(self):
         return " "
 
+# IMPLEMENT option parser
+# parse all options and delegate them to each enhance parsers
 class options_parser(parser):
     def __init__(self, enhance_options):
         self.__enhance_options = enhance_options
@@ -72,6 +74,8 @@ class options_parser(parser):
     def dump(self):
         return self.__options
 
+# IMPLEMENT packet file parser
+# enhance option '-F' to load multiple options, yaml file and directory
 class packet_file_enhance(parser):
 
     def __init__(self, packets_file):
@@ -96,6 +100,8 @@ class packet_file_enhance(parser):
         help_string = "    -F pkt_files    support \"%s\" or direcotries that include these kind of files\n"%(",".join(converter.converters.keys()))
         return help_string
 
+# IMPLEMENT upload file parser
+# enhance option '-p' and -u' to automatically inferring the Content-Type by file ext
 class upload_file_enhance(parser):
     
     def __init__(self, option, content_type_modify):
@@ -140,6 +146,8 @@ class upload_file_enhance(parser):
             return "    -u putfile      File containing data to PUT. Content-Type will be detected by file ext,\n"+\
                    "                    the Content-Type will be application/actet-stream if file ext cannot be identified\n"
 
+# IMPLEMENT content type parser
+# in order to compatible with wb, '-T' option will have higher priority to set Content-Type than automatically inferring  
 class content_type_modify(parser):
     def __init__(self):
         self.__content_type = None
