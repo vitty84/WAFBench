@@ -15,11 +15,11 @@
               port: 12701
               uri: "/index.html"
               headers:
-                  User-Agent: "ModSecurity CRS 3 Tests"              
+                  User-Agent: "WAFBench"              
                   Host: "localhost"
                   Connection: "close"
             output: 
-              no_log_contains: "test1"   
+              no_log_contains: ""   
     - 
       test_title: test2
       stages: 
@@ -30,8 +30,8 @@
               port: 12701
               uri: "/index.html"
               headers:
-                  User-Agent: "ModSecurity CRS 3 Tests"              
+                  User-Agent: "WAFBench"              
                   Host: "localhost"
                   Connection: "close"
             output: 
-              no_log_contains: "test2"   
+              no_log_contains: ""   
