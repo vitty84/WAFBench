@@ -18,8 +18,16 @@ class help_document_revise(filter):
         self.__options = enhance_options
 
     def __call__(self, line):
-        #capture opt
         import re
+
+        #replace executable
+        pattern = "^Usage:\s*(\S+)"
+        wb_path = re.finditer(pattern, line)
+        for wb_path in wb_path:
+            import sys
+            return line[:wb_path.start()] + sys.argv[0] + line[wb_path.end():]
+
+        #replace opt help
         pattern = "^\s{4}(-\w)"
         opt = re.search(pattern, line)
         if opt:
@@ -30,9 +38,13 @@ class help_document_revise(filter):
                 return self.__options[opt].help()
             else:
                 self.__ignore = False
+        
+        #first char isn't a space, need cancel ignore
+        pattern = "^\S"
+        if re.match(pattern, line):
+            self.__ignore = False
 
         #ignore this line
-        
         if not self.__ignore:
             return line
         return None

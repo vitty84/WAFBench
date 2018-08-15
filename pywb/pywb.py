@@ -59,13 +59,6 @@ def execute(argument, customized_options = {}, customized_filters = []):
 
 if __name__ == '__main__':
     import sys
-    import os
 
-    executable = os.path.basename(os.path.normpath(sys.argv[0]))
-    if executable == "python" or executable == "python3":
-        #remove python executable
-        sys.argv = sys.argv[1:]
-    #remove executable name
-    sys.argv = sys.argv[1:]
-    execute(sys.argv)
+    execute(sys.argv[1:])
     
