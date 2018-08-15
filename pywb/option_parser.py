@@ -116,9 +116,6 @@ class upload_file_enhance(parser):
     def dump(self):
         if len(self.__post_files) == 0:
             return []
-        #if Content-Type is set, we don't need automatic inferring
-        if self.__content_type_modify.is_set():
-            return [self.__option, post_file]
 
         #current only support one file at once post request
         if len(self.__post_files) > 1:
@@ -128,6 +125,10 @@ class upload_file_enhance(parser):
         post_file = self.__post_files[0]
         if not os.path.exists(post_file):
             error(post_file + " isn't exist")
+
+        #if Content-Type is set, we don't need automatic inferring
+        if self.__content_type_modify.is_set():
+            return [self.__option, post_file]
 
         _,file_ext = os.path.splitext(post_file)
         file_ext = file_ext.lower()
