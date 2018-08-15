@@ -1,13 +1,25 @@
 
 from pywb_utility import *
 
+# INTERFACE for option parsing
+# implement this interface and bind its instance to an option
+# this instance will be called when the option meet
 class parser(object):
+    # parse option
+    # @param options: the parameters of the triggered option 
+    # @return: the number of parameters of this parser need
     def parse(self, options):
         return 0
+    
+    # dump the option for wb
+    # @return: the options that will be passed to wb
     def dump(self):
         return []
+
+    # help document
+    # @return: the help document for the option bound by this instance 
     def help(self):
-        return "            "
+        return " "
 
 class options_parser(parser):
     def __init__(self, enhance_options):
@@ -61,13 +73,6 @@ class options_parser(parser):
         return self.__options
 
 class packet_file_enhance(parser):
-    import YAML_convert
-    import PKT_convert
-    
-    __converters = {
-        ".yaml":YAML_convert.execute,
-        ".pkt":PKT_convert.packet_files_merge,
-    }
 
     def __init__(self, packets_file):
         self.__packets_file = packets_file
@@ -87,7 +92,8 @@ class packet_file_enhance(parser):
         return ["-F", self.__packets_file]
 
     def help(self):
-        help_string = "    -F pkt_files    support \"%s\" or direcotries that include these kind of files\n"%(",".join(packet_file_enhance.__converters.keys()))
+        import converter
+        help_string = "    -F pkt_files    support \"%s\" or direcotries that include these kind of files\n"%(",".join(converter.converters.keys()))
         return help_string
 
 class upload_file_enhance(parser):
@@ -139,8 +145,7 @@ class content_type_modify(parser):
         self.__content_type = None
     def help(self):
         return "    -T content-type Content-type header to use for POST/PUT data, eg.\n"+\
-               "                    'application/x-www-form-urlencoded'\n"+\
-               "                    Default is 'text/plain', it's not compatible with -p and -u.\n"
+               "                    'application/x-www-form-urlencoded'\n"
     def parse(self, options):
         self.__content_type = options[0]
         return 1

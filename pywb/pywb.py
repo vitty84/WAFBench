@@ -1,9 +1,9 @@
 #!/usr/bin/python
 
 def run_wb(argument, output_filters = []):
+    import subprocess
+    wb = subprocess.Popen(argument, shell=False, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     try:
-        import subprocess
-        wb = subprocess.Popen(argument, shell=False, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         while True:
             line = wb.stdout.readline()
             if not line:
@@ -12,9 +12,14 @@ def run_wb(argument, output_filters = []):
                 line = flt(line)
                 if line is None:
                     break
-
     except KeyboardInterrupt:
-        pass    
+        lines = wb.communicate()[0]    
+        for line in lines.split('\n'):
+            line += "\n"
+            for flt in output_filters:
+                line = flt(line)
+                if line is None:
+                    break
 
 
 def execute(argument, customized_options = {}, customized_filters = []):
@@ -24,17 +29,20 @@ def execute(argument, customized_options = {}, customized_filters = []):
 
     packet_file_enchance = option_parser.packet_file_enhance("default.pkt")
     content_type_modify = option_parser.content_type_modify()
-    post_file_enchande = option_parser.upload_file_enhance("-p", content_type_modify)
-    put_file_enchande = option_parser.upload_file_enhance("-u", content_type_modify)
+    post_file_enchance = option_parser.upload_file_enhance("-p", content_type_modify)
+    put_file_enchance = option_parser.upload_file_enhance("-u", content_type_modify)
 
-    enhance_options = {
-            "-F": packet_file_enchance,
 
-            "-p": post_file_enchande,
-            "-u": put_file_enchande,
-            "-T": content_type_modify,
+    import collections
+    enhance_options = collections.OrderedDict([
+    
+            ("-F", packet_file_enchance),
+
+            ("-p", post_file_enchance),
+            ("-u", put_file_enchance),
+            ("-T", content_type_modify),
             
-            }
+    ])
 
     for opt, parser in customized_options.items():
         enhance_options[opt] = parser

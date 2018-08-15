@@ -101,7 +101,7 @@ EXAMPLE
     ./converter.py rtt_ruleset/ -o packets.pkt
     '''
 
-__converters = {
+converters = {
     ".yaml": convert_yaml_directory_to_packets,
     ".pkt" : pkt_files_merge,
 }
@@ -134,14 +134,14 @@ def execute(packet_paths = [], outputer = ""):
     for path in packet_paths:
         import os
         if os.path.isdir(path):
-            for _, converter in __converters.items():
+            for _, converter in converters.items():
                 outputer(converter(path))
         elif os.path.isfile(path):
             _, file_ext = os.path.splitext(path)
             file_ext = file_ext.lower()
-            if file_ext not in __converters:
+            if file_ext not in converters:
                 error(path + "'s extension " + file_ext + " isn't supported")
-            outputer(__converters[file_ext](path))
+            outputer(converters[file_ext](path))
 
 if __name__ == '__main__':
     import sys

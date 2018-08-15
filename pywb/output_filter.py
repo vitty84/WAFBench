@@ -6,8 +6,9 @@ class filter(object):
 
 class simple_printer(filter):
     def __call__(self, line):
-        import sys
-        sys.stdout.write(line)
+        if line != None:  
+            import sys
+            sys.stdout.write(line)
         return line
 
 
@@ -16,10 +17,15 @@ class help_document_revise(filter):
         self.__buffer = ""
         self.__ignore = False
         self.__options = enhance_options
+        self.__print_new_option = False
 
     def __call__(self, line):
-        import re
+        
+        if line == None:
+            return None
 
+        import re
+        
         #replace executable
         pattern = "^Usage:\s*(\S+)"
         wb_path = re.finditer(pattern, line)
@@ -27,15 +33,28 @@ class help_document_revise(filter):
             import sys
             return line[:wb_path.start()] + sys.argv[0] + line[wb_path.end():]
 
-        #replace opt help
+
+        #print help of enhance options
+        pattern = "New options for wb"
+        if re.match(pattern, line):
+            self.__print_new_option = True
+            return line
+
+        if self.__print_new_option:
+            for _, option in self.__options.items():
+                line += option.help()
+            self.__print_new_option = False
+            return line
+        
+
+        #remove old option help
         pattern = "^\s{4}(-\w)"
         opt = re.search(pattern, line)
-        if opt:
-            
+        if opt:            
             opt = opt.group(1)
             if opt in self.__options:
                 self.__ignore = True
-                return self.__options[opt].help()
+                # return self.__options[opt].help()
             else:
                 self.__ignore = False
         

@@ -18,7 +18,6 @@ Some software or libraries may be necessary for have been listed in [WB Home Pag
 
 ### Options
 
-
 **options** are compatible with [wb](../wb/README.md).
 
 
@@ -29,12 +28,19 @@ Some software or libraries may be necessary for have been listed in [WB Home Pag
 
 ### Example
 
-Normal usage:
-
 ```
-#post a json file
+#post a json file, automatically infer the Content-Type
 ./pywb.py  10.0.1.131:18080  -p ../example/packets/requestbody2kb.json  -t 5 -c 20
 
-#send packets in a specified direcotry
+#send packets in a specified directory
 ./pywb.py  10.0.1.131:18080  -F ../example/packets/  -t 5 -c 20
+
+#send packets in multiple files
+./pywb.py  10.0.1.43:18080 -t 5 -c 20 -k -F ../example/packets/test-2-packets.yaml -F ../example/packets/test-2-packets.pkt​
+```
+
+### Develop
+Two interfaces are provided to developer to customize new features. 
+```
+
 ```
