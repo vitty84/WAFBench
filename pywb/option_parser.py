@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License.
@@ -10,7 +11,7 @@ from pywb_utility import *
 # this instance will be called when the option meet
 class parser(object):
     # parse option
-    # @param options: the parameters of the triggered option 
+    # @param options: the parameters of the triggered option
     # @return: the number of parameters of this parser need
     def parse(self, options):
         return 0
