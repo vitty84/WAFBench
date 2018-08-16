@@ -25,7 +25,7 @@ Automatic WAF correctness testing can relieve developers from the heavy and tedi
 
 For the testing framework, we provide a `FTW-Compatible Tool` which leverages `wb` as its underlying tool. Its performance is better than FTW.
 
-For testcases, we provide several generators for different purposes:
+For test cases, we provide several generators for different purposes:
 
 - Generate YAML files from the real traffic logs.
 - Generate YAML files from the WAF ruleset.
@@ -46,6 +46,12 @@ WAF Bench (wb) is the ab-like tool for conducting performance testing.
 * M2 - Support request rate limit
 
 ### Python-based WAF Bench
+Python WAF Bench (pywb) is an enhanced tools of wb.
+* M0 - Compatible with wb
+* M0 - Send multiple file and directories in once executing.
+* M0 - Automatically inferring Content-Type according to the post/put file
+* M1 - Support pip install
+
 
 ### FTW-compatible Tool
 
@@ -139,17 +145,16 @@ wb -t 10 -c 25 -F requests.dat 10.0.1.1:18081
 
 * About the format of request file, please refer to [wb Readme](./wb/README.md)
 
-It is strongly recommended that use one of generators to generate request file from high level information rather than writing them by own.
+It is strongly recommended that edit the request file from high level information, like yaml, for your customized packets rather than writing raw packet data ,like pkt, by own.
 
-Here is an example to use [YAML generator](./Generator/README.md):
+Meanwhile the [pywb](./pywb/README.md) can directly send request that defined by yaml format. :
 
 ```
 cd example
-../Generator/YAML_generator.py packets/test-1-packet.yaml -o /tmp/packet.pkt
-wb -F /tmp/packet.pkt -c 20 -t 5 10.0.1.44:12701
+../pywb/pywb.py packets/test-1-packet.yaml -c 20 -t 5 10.0.1.44:12701
 ```
 
-You can also refer to `./example/WB-SEND-PACKET-FROM-YAML.sh`.
+You can also refer to `./example/PYWB-SEND-PACKET.sh`.
 
 #### Conduct WAF Correctness Testing
 
@@ -167,9 +172,8 @@ You can also refer to `./example/WB-SEND-PACKET-FROM-YAML.sh`.
 
 Since the components are independent to each other, the detailed build, install and use tutorials are maintained in their own folder. You can access them at:
 
-* [Generator](./Generator/README.md)
-  * FTW-Compatible YAML Generator
 * [wb](./wb/README.md)
+* [pywb](./pywb/README.md)
 * [FTW-Compatible Tool](./FTW-compatible-tool/README.md)
 
 ## Attributions

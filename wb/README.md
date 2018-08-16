@@ -300,8 +300,9 @@ There are several examples in `../example/` to help understanding usage.
     -W stats_num    Window of stats, number of stats values (default=50000)
     -1              (for testing) Don't append Host:localhost if absent (
                     default to add)
-    -2              (for testing) Don't append Connection:close if absent (
-                    default to add)
+    -2 option       (for testing)  Don't append Connection:close if option is 0,
+                    Append connection:close to those packets without connection attribution if option is 1,
+                    Append or replace connection attribution to close for any packets if option is 2
     -3              (for testing) Use micro-second granularity in output,
                     default disabled
 ```
