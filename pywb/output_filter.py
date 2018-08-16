@@ -1,4 +1,8 @@
 
+# Copyright (c) Microsoft Corporation. All rights reserved.
+# Licensed under the MIT License.
+
+
 # INTERFACE for processing of the stderr and stdout of wb
 # line by line to process the stderr and stdout of wb
 class filter(object):

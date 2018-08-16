@@ -1,5 +1,9 @@
 #!/usr/bin/python
 
+# Copyright (c) Microsoft Corporation. All rights reserved.
+# Licensed under the MIT License.
+
+
 def run_wb(argument, output_filters = []):
     import subprocess
     wb = subprocess.Popen(argument, shell=False, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)

@@ -1,4 +1,8 @@
 
+# Copyright (c) Microsoft Corporation. All rights reserved.
+# Licensed under the MIT License.
+
+
 from pywb_utility import *
 
 # INTERFACE for option parsing

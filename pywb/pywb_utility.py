@@ -1,5 +1,6 @@
 
-
+# Copyright (c) Microsoft Corporation. All rights reserved.
+# Licensed under the MIT License.
 
 def error(error_message):
     import sys
@@ -16,8 +17,8 @@ def get_wb_path():
     error("wb cannot be found")
 
 
-
-#refer : http://www.iana.org/assignments/media-types/media-types.xhtml
+#refer : https://stackoverflow.com/questions/1029740/get-mime-type-from-filename-extension
+#   original refer : http://www.iana.org/assignments/media-types/media-types.xhtml
 mime_type_dict = {k.lower():v for k,v in {
     ".323": "text/h323",
     ".3g2": "video/3gpp2",

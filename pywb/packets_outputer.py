@@ -1,3 +1,7 @@
+
+# Copyright (c) Microsoft Corporation. All rights reserved.
+# Licensed under the MIT License.
+
 # make a outputer to output the packets
 # @param packets_file: the path of file that want to output the packets
 # @return: packets outputer
