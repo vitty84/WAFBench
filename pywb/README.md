@@ -67,15 +67,18 @@ class parser(object):
     def help(self):
         return " "
 
-# output_filter.py
-#
 # INTERFACE for processing of the stderr and stdout of wb
 # line by line to process the stderr and stdout of wb
 class filter(object):
     #process one line
-    # @param line: one line output from stderr and stdout of wb
+    # @param line: a line of string type from stderr and stdout of wb,
+    #              the concrete content is depend on the runtime of wb
+    # @return:     what content the filter want to output. 
+    #              if return is None, this filter will be an terminator,
+    #              It means that all of filter after this will lose the 
+    #              information of this line.
     def __call__(self, line):
-        pass
+        return line
 
 #implement some class for your features
 class my_parser(parser):
