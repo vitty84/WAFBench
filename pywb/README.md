@@ -49,13 +49,16 @@ Two interfaces are provided to developer to customize new features.
 # this instance will be called when the option meet
 class parser(object):
     # parse option
-    # @param options: the parameters of the triggered option 
-    # @return: the number of parameters of this parser need
+    # @param options: the parameters of the triggered option, 
+    #                 it's the parameters list that doesn't include triggered option
+    # @return:        the number of parameters of this parser need
     def parse(self, options):
         return 0
     
     # dump the option for wb
-    # @return: the options that will be passed to wb
+    # @return:        the options that will be passed to wb
+    #                 it's a parameters list. if space-separated string is inserted
+    #                 in to the return list, it'll be as just one parameter to pass to wb
     def dump(self):
         return []
 
