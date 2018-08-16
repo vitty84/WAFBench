@@ -6,8 +6,10 @@
 
 from pywb_utility import *
 
-#PKT convert    
 
+# read packets from .pkt file
+# @param pkt_file: the path of file of save packets
+# @return: packets list. the packets list saved in the file
 def read_packets_from_pkt_file(pkt_file):
     import os
     pkt_file = os.path.abspath(pkt_file)
@@ -15,31 +17,35 @@ def read_packets_from_pkt_file(pkt_file):
         error(pkt_file + " is not existed\n")
     with open(pkt_file, "rb") as f:
         return [f.read()]
+    return []
 
-def pkt_files_merge(pkt_files = []):
+# read packets from .pkt file set
+# @param pkt_paths: the path set of save packets
+# @return: packets list. the packets list saved in the file
+def read_packets_from_pkt_paths(pkt_paths = []):
 
-    if type(pkt_files) == str:
-        pkt_files = [pkt_files]
+    if type(pkt_paths) == str:
+        pkt_paths = [pkt_paths]
     packets = []
 
-    for pkt_file in pkt_files:
+    for pkt_path in pkt_paths:
         import os
-        pkt_file = os.path.abspath(pkt_file)
-        if not os.path.exists(pkt_file):
-            error(pkt_file + " is not existed\n")
+        pkt_path = os.path.abspath(pkt_path)
+        if not os.path.exists(pkt_path):
+            error(pkt_path + " is not existed\n")
             
-        if os.path.isdir(pkt_file):
-            for root, _, files in os.walk(pkt_file):
+        if os.path.isdir(pkt_path):
+            for root, _, files in os.walk(pkt_path):
                 for file in files:
                     #second item is file ext
                     if os.path.splitext(file)[1].lower() != ".pkt":
                         continue
                     packets += read_packets_from_pkt_file(os.path.join(root, file))
                     
-        elif os.path.isfile(pkt_file):
-            if os.path.splitext(pkt_file)[1].lower() != ".pkt":
+        elif os.path.isfile(pkt_path):
+            if os.path.splitext(pkt_path)[1].lower() != ".pkt":
                 continue
-            packets += read_packets_from_pkt_file(pkt_file)
+            packets += read_packets_from_pkt_file(pkt_path)
             
     return packets
 
@@ -86,36 +92,30 @@ def convert_yaml_directory_to_packets(yaml_directory):
 def help():
     return '''
 converter.py
-    convert yaml or pkt files into a file
+    convert yaml or pkt files into a pkt file
 
 SYNOPSIS
     python converter.py [OPTION] [PATHS...]
     ./converter.py [OPTION] [PATHS...]
 
 DESCRIPTION
-    PATHS...        input .yaml or .pkt files or directories that includes these kinds of files
+    PATHS...        input .yaml/.pkt files or directories that includes these kinds of files
     -o/--output     output packets file , default is stdout
     -h/--help       print help
     
 EXAMPLE
-    #normal
     ./converter.py rtt_ruleset/ -o packets.pkt
     '''
 
 converters = {
     ".yaml": convert_yaml_directory_to_packets,
-    ".pkt" : pkt_files_merge,
+    ".pkt" : read_packets_from_pkt_paths,
 }
 
 # execute this file
-# @param yaml_files: a list includes yaml files or directories that include some files of yaml format, default is stdin
-# @param packets_file: output file for packets, default is stdout
+# @param packet_paths: a list of path that includes .pkt or .yaml files
+# @param outputer: output file of packets, default is stdout
 def execute(packet_paths = [], outputer = ""):
-    # import sys
-    #read packets
-    # if not yaml_files:
-    #     packets = convert_yaml_string_to_packets(sys.stdin.read())
-    #     outputer(packets)
 
     if type(packet_paths) == str:
         packet_paths = [packet_paths]

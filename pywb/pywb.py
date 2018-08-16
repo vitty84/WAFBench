@@ -4,7 +4,9 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License.
 
-
+# run wb
+# @param argument: argument of wb
+# @param output_filters: filters to process the output of wb
 def run_wb(argument, output_filters = []):
     import subprocess
     wb = subprocess.Popen(argument, shell=False, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
@@ -26,7 +28,10 @@ def run_wb(argument, output_filters = []):
                 if line is None:
                     break
 
-
+# execute pywb
+# @param argument: argument of pywb
+# @param customized_options: customized options for pywb
+# @param customized_filters: customized filters for processing the output of wb
 def execute(argument, customized_options = {}, customized_filters = []):
     
     #enhance parse option
@@ -56,9 +61,6 @@ def execute(argument, customized_options = {}, customized_filters = []):
 
     parser.parse(argument)
     argument = parser.dump()
-    # print(real_command)
-    
-    #output enhance
 
     #execute
     import output_filter

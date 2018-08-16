@@ -52,9 +52,9 @@ class options_parser(parser):
                 single_option.append(option)
                 continue
 
-            position = acceptable_options.find(option[1:])
+            position = acceptable_options.find(option[1])
             #not support argument
-            if position == -1:
+            if len(option) != 2 or position == -1:
                 error("unsupported argument [" + option + "]")
             if acceptable_options[position + 1] == ":":
                 double_option.append(option)
@@ -88,19 +88,20 @@ class packet_file_enhance(parser):
 
     def __init__(self, packets_file):
         self.__packets_file = packets_file
-        self.__read_packets_path = []
+        self.__read_packets_paths = []
         
 
     def parse(self, options):
-        if len(options) > 0:
-            self.__read_packets_path.append(options[0])
+        if len(options) == 0:
+            error("-F need an argument")
+        self.__read_packets_paths.append(options[0])
         return 1
 
     def dump(self):
-        if len(self.__read_packets_path) == 0:
+        if len(self.__read_packets_paths) == 0:
             return []
         import converter
-        converter.execute(self.__read_packets_path, self.__packets_file)
+        converter.execute(self.__read_packets_paths, self.__packets_file)
         return ["-F", self.__packets_file]
 
     def help(self):
@@ -117,8 +118,9 @@ class upload_file_enhance(parser):
         self.__post_files = []
         self.__content_type_modify = content_type_modify
     def parse(self, options):
-        if len(options) > 0:
-            self.__post_files.append(options[0])
+        if len(options) == 0:
+            error(self.__option + " need an argument")
+        self.__post_files.append(options[0])
         return 1
     
     def dump(self):
@@ -164,6 +166,8 @@ class content_type_modify(parser):
         return "    -T content-type Content-type header to use for POST/PUT data, eg.\n"+\
                "                    'application/x-www-form-urlencoded'\n"
     def parse(self, options):
+        if len(options) == 0:
+            error("-T need an argument")
         self.__content_type = options[0]
         return 1
     def is_set(self):
