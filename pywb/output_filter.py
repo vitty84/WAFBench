@@ -6,13 +6,15 @@
 
 # INTERFACE for processing of the stderr and stdout of wb
 # line by line to process the stderr and stdout of wb
+# It's not recommended to modify the line, 
+# because it maybe conflicts with other filters
 class filter(object):
     #process one line
     # @param line: a line of string type from stderr and stdout of wb,
-    #              the concrete content is depend on the runtime of wb
+    #              the concrete content depends on the runtime of wb
     # @return:     what content the filter want to output. 
-    #              if return is None, this filter will be an terminator,
-    #              It means that all of filter after this will lose the 
+    #              if the return is None, this filter will be a terminator,
+    #              It means that all of the filters after this will lose the 
     #              information of this line.
     def __call__(self, line):
         return line

@@ -1,8 +1,8 @@
-[WB Home Page](../README.md)
+ [WB Home Page](../README.md)
 
 # pywb
 
-`pywb` is an enhanced interface for `wb`. It is more friendly to use and more easy for developing.
+`pywb` is an enhanced interface for `wb`. It is more friendly to use and easier for developing.
 
 ## Features
 
@@ -36,11 +36,11 @@ Some software or libraries may be necessary for have been listed in [WB Home Pag
 ./pywb.py  10.0.1.131:18080  -F ../example/packets/  -t 5 -c 20
 
 #send packets in multiple files
-./pywb.py  10.0.1.43:18080 -t 5 -c 20 -k -F ../example/packets/test-2-packets.yaml -F ../example/packets/test-2-packets.pkt​
+./pywb.py  10.0.1.43:18080 -t 5 -c 20 -k -F ../example/packets/test-2-packets.yaml -F ../example/packets/test-2-packets.pkt
 ```
 
 ### Develop
-Two interfaces are provided to developer to customize new features. 
+Two interfaces are provided to developers to customize new features. 
 ```
 # option_parser.py
 #
@@ -57,8 +57,8 @@ class parser(object):
     
     # dump the option for wb
     # @return:        the options that will be passed to wb
-    #                 it's a parameters list. if space-separated string is inserted
-    #                 in to the return list, it'll be as just one parameter to pass to wb
+    #                 it's a parameters list. if the space-separated string is inserted
+    #                 into the return list, it'll be as just one parameter to pass to wb
     def dump(self):
         return []
 
@@ -69,25 +69,75 @@ class parser(object):
 
 # INTERFACE for processing of the stderr and stdout of wb
 # line by line to process the stderr and stdout of wb
+# It's not recommended to modify the line, 
+# because it maybe conflicts with other filters
 class filter(object):
     #process one line
     # @param line: a line of string type from stderr and stdout of wb,
-    #              the concrete content is depend on the runtime of wb
+    #              the concrete content depends on the runtime of wb
     # @return:     what content the filter want to output. 
-    #              if return is None, this filter will be an terminator,
-    #              It means that all of filter after this will lose the 
+    #              if the return is None, this filter will be a terminator,
+    #              It means that all of the filters after this will lose the 
     #              information of this line.
     def __call__(self, line):
         return line
 
-#implement some class for your features
-class my_parser(parser):
-    pass
 
-class my_filter(filter):
-    pass
+#######################
+#EXAMPLE OPTION PARSER#
+#######################
 
 
-#install your instance into wb
-pywb.execute(sys.argv[1:], {"my_option" : my_parser()}, [my_filter()])
+import pywb
+import option_parser
+
+# IMPLEMENT import command
+# import previous command that save in the file pywb.ini (-t 5 -c 20 10.0.1.43:18080)
+# by -x pywb.ini
+class execute_init(option_parser.parser):
+    def parse(self, options):
+        #options[0] will be the file path
+        command = ""
+        with open(options[0], 'r') as fd:
+            command = fd.readline()
+            #remove newline char
+            command = command.strip()
+        #split command into a list
+        self.__command = command.split(' ')
+        #return 1 to tell pywb, this parser only eat one argument
+        return 1
+    def dump(self):
+        #return all of commands that will pass to wb
+        print self.__command
+        return self.__command
+    def help(self):
+        return "   -x FILE      will import some arguments that were saved in FILE as the arguments of wb"
+
+#execute wb
+pywb.execute(["-x", "pywb.ini"], customize d_options = { "-x" : execute_init()})
+
+
+
+#######################
+#EXAMPLE FILTER       #
+#######################
+
+import pywb
+import output_filter
+
+# IMPLEMENT logger
+# to save all of output from wb 
+class logger(output_filter.filter):
+    def __init__(self, log_file):
+        self.__log_file = log_file
+    def __call__(self, line):
+        #ignore those lines only include spaces
+        import re
+        with open(self.__log_file, 'a') as fd:
+            #save log into file
+            fd.write(line)
+        return line
+
+pywb.execute([], customized_filters=[logger("log")])
+
 ```

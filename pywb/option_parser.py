@@ -19,13 +19,13 @@ class parser(object):
     
     # dump the option for wb
     # @return:        the options that will be passed to wb
-    #                 it's a parameters list. if space-separated string is inserted
-    #                 in to the return list, it'll be as just one parameter to pass to wb
+    #                 it's a parameters list. if the space-separated string is inserted
+    #                 into the return list, it'll be as just one parameter to pass to wb
     def dump(self):
         return []
 
     # help document
-    # @return: the help document for the option bound by this instance 
+    # @return:        the help document for the option bound by this instance 
     def help(self):
         return " "
 
