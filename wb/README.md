@@ -71,40 +71,14 @@ Benchmark "live.com/home.html" for 10 seconds just like ab.
 ### WAF performance testing
 
 ```
-wb -t 10 -F requests.pkt 10.0.1.131:18081
+wb -t 10 -c 20 10.0.1.131:18081
 ```
 
 The three options are:    
 
 * duration of testing (-t 10, 10 seconds) 
-* input packets (-F pkts.dat, including traffic) 
+* connection number (-c 20) 
 * destination server/URL (10.0.1.131:18081). Note that, unlike ab, wb does not require "/" at the end of URL.
-
-### WAF correctness testing with YMAL file in 3 steps
-
-#### Step 1: Generate the packets with YMAL file
-
-`ftw_generator.py` is located in `FTW-compatible-tool`.
-
-```
-python ftw_generator.py -f sample.yaml -o pkts.dat   
-```
-
-#### Step 2: Test using generated packets and save response to response.dat
-
-```
-wb -t 10 -F pkts.dat -o response.dat 10.0.1.131:18081
-```
-
-The one new option is:
-
-* save received message to file "response.dat" (-o response.dat) 
-
-#### Step 3: Compare the resulted response with the result in the same YAML
-
-```	   
-python ftw_comparator.py -L <remote_server_log> -o compare_output.dat
-```
 
 ### Examples
 
@@ -298,7 +272,7 @@ There are several examples in `../example/` to help understanding usage.
 
 ## Packet Format
 
-**Note**: Because handwritten packets are error-prone, we highly recommend you to use generators in [`Generator/`](../Generator).
+**Note**: Because handwritten packets are error-prone, we highly recommend you to edit the information of packets with YAML format and it can be directly sent by [`pywb`](../pywb).
 
 This section describes the format of the packet file used in wb's `-F` option.
 
