@@ -944,7 +944,7 @@ void print_progress(int forced_print )
 		delta_t = time_now - prev_heartbeat_time;
         if (forced_print || prev_heartbeat_time) {
 			if (!g_extended_progress) // print out simple info
-            fprintf(stderr, "%2d: Completed %6d requests, rate is %d #/sec.\n", 
+            fprintf(stderr, "%2d: Completed %6d requests, rate is %ld #/sec.\n", 
                 ++heartbeats_num, done, APR_USEC_PER_SEC * (done - prev_done)/delta_t);
 			else { 	// print out additional info
 		        apr_time_t totalcon = 0, total = 0, totald = 0, totalwait = 0;
@@ -1032,14 +1032,14 @@ void print_progress(int forced_print )
 				//fprintf(stderr, "\nTime Req(#/sec) Recv(kBps) Failed(C/R/L/E/W/Non-2xx)");
 				fprintf(stderr, "%-5d%-11d%-11d", 
 						++heartbeats_num,  
-						APR_USEC_PER_SEC * (done - prev_done)/delta_t,
-						APR_USEC_PER_SEC * (totalread - prev_totalread)/delta_t/1000);
+						(long long int)(APR_USEC_PER_SEC * (done - prev_done)/delta_t),
+						(long long int)(APR_USEC_PER_SEC * (totalread - prev_totalread)/delta_t/1000));
 				if (send_body)
 					//fprintf(stderr, "Sent(kBps) ");
-					fprintf(stderr, "%-11d", APR_USEC_PER_SEC*(totalposted - prev_totalposted)/delta_t/1000);
+					fprintf(stderr, "%-11d", (long long int)(APR_USEC_PER_SEC*(totalposted - prev_totalposted)/delta_t/1000));
 
 				//fprintf(stderr, "Latency(min/max/avg/+-sd) Failed(C/R/L/E/W/Non-2xx)");
-				fprintf(stderr, "%-6d/%-8d/%-6d/%-8.1f/",mintot,maxtot,meantot,sdtot);
+				fprintf(stderr, "%-6lld/%-8lld/%-6lld/%-8.1f/",(long long int)mintot,(long long int)maxtot,(long long int)meantot,sdtot);
 				fprintf(stderr, "%d", bad - prev_bad);
 				if (bad) {
 					fprintf(stderr, "(%d/%d/%d/%d/%d/%d)",
@@ -1258,7 +1258,7 @@ static ulong parse_pktfile(char *pkt_data, struct _g_pkt_array_ *pkt_array)
 			c = *p2; 
 			*p2 = 0;
 			// use string scanf to fetch numbers
-			sscanf(p,"%d %d.%d",&l_pkt_size, &time_sec, &time_usec);
+			sscanf(p,"%lu %lu.%lu",&l_pkt_size, &time_sec, &time_usec);
 			*p2 = c;
 
 			if (l_pkt_size > 0) {
@@ -1456,9 +1456,9 @@ void save_logfile (char * buf, apr_size_t buflen)
         buflen = 0;
     
     if (need_add_LN) {
-        sprintf(size_str,"\n%d\n",buflen);
+        sprintf(size_str,"\n%zu\n",buflen);
     } else 
-        sprintf(size_str,"%d\n",buflen);
+        sprintf(size_str,"%zu\n",buflen);
     
     next_save_length = strlen(size_str);
     rv = apr_file_write(g_save_file_fd, size_str, &next_save_length);
@@ -1539,7 +1539,7 @@ static void write_request(struct connection * c)
 
                 char req_id_string[1024]; // normally len of id string < 1024
                 int req_id_string_len = 0;
-                sprintf(req_id_string, "%d",req_sent++);
+                sprintf(req_id_string, "%lu",req_sent++);
                 req_id_string_len = strlen(req_id_string);
 
                 g_new_header_len = 0;
@@ -1744,7 +1744,7 @@ static void write_request(struct connection * c)
         } else  // send postdata, reqlen is already sent
             sendbuf = postdata + c->rwrote - reqlen;
         if (verbosity >= 2)
-            printf("writing request(%d bytes)=>[%s]\n",l, sendbuf);
+            printf("writing request(%zu bytes)=>[%s]\n",l, sendbuf);
 #endif // _WAF_BENCH_ // avoid copying post data to request
 
 #ifdef USE_SSL
@@ -2641,7 +2641,7 @@ read_more:
         if (!c->gotheader || g_save_body)
             save_logfile(buffer, r);
         if (verbosity >= 2) {
-            printf("LOG: http packet received(%d bytes):\n%s\n", r,buffer);
+            printf("LOG: http packet received(%zu bytes):\n%s\n", r,buffer);
         }
     }
 #endif //_WAF_BENCH_ , // save packets to file
@@ -2979,7 +2979,7 @@ static void test(void)
 // previous system allocates one single buffer holding header and body
 // wb uses seperate buffers to hold them, and send them seperately
     if (g_pkt_length > 0)
-        fprintf(stderr, "\n read %d packets from file with total length(%d).\n", 
+        fprintf(stderr, "\n read %zu packets from file with total length(%zu).\n", 
             g_MAX_PKT_COUNT, g_pkt_length);
 #else // original code goes here
     if (send_body) {
