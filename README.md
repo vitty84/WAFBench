@@ -152,8 +152,8 @@ wb -t 10 -c 25 -F requests.dat 10.0.1.1:18081
 * About the format of request file, please refer to [wb Readme](./wb/README.md)
 
 
-#### Recommend(<font color=red>pywb</font>)
-**pywb** is an enhanced tools of wb. It is strongly recommended that edit the request file from high level information, like yaml, for your customized packets rather than writing raw packet data ,like pkt, by own.
+#### Recommend(**[pywb](./pywb/README.md)**)
+**[pywb](./pywb/README.md)** is an enhanced tools of wb. It is strongly recommended that edit the request file from high level information, like yaml, for your customized packets rather than writing raw packet data ,like pkt, by own.
 
 Meanwhile the **[pywb](./pywb/README.md)** can directly send request that defined by yaml format. :
 
