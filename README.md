@@ -76,7 +76,7 @@ Some software or libraries may be necessary for further build / usage. All of th
 - **libev** library (tested with libev 4.0.0)
 - **CMake** 2.8 or higher (tested with CMake 2.8)
 - **Boost** libraries (tested with 1.53.0)
-- **Python** 2 (tested with 2.7.5) or **Python** 3 (tested with 3.4.8)
+- **Python** 2 (tested with 2.7.5)
 - **pip** python package management tool (tested with 8.1.2)
 - **ftw** python module (tested with ftw 1.1.4)
 - **wget** library (tested with wget-1.14-15.e17_4.1)
@@ -119,15 +119,21 @@ sudo yum install gcc gcc-c++ make libev-devel.x86_64 cmake boost-devel.x86_64 py
 sudo pip install ftw
 ```
 
-**Note**: Although the dependencies above need `python2`, FTW Compatible Tool Suits could works in `python3` without any modification.
-
 #### Download WB tools suits 
 
 Just clone this repo to your machines.
+```
+git clone git@github.com:Microsoft/WAFBench.git
+```
 
 #### Install wb
 
 Please refer to [wb Readme](./wb/README.md)
+```
+cd wb
+make
+make install
+```
 
 #### Conduct Performance Test / AB-like Test
 
@@ -145,13 +151,15 @@ wb -t 10 -c 25 -F requests.dat 10.0.1.1:18081
 
 * About the format of request file, please refer to [wb Readme](./wb/README.md)
 
-It is strongly recommended that edit the request file from high level information, like yaml, for your customized packets rather than writing raw packet data ,like pkt, by own.
 
-Meanwhile the [pywb](./pywb/README.md) can directly send request that defined by yaml format. :
+#### Recommend(<font color=red>pywb</font>)
+**pywb** is an enhanced tools of wb. It is strongly recommended that edit the request file from high level information, like yaml, for your customized packets rather than writing raw packet data ,like pkt, by own.
+
+Meanwhile the **[pywb](./pywb/README.md)** can directly send request that defined by yaml format. :
 
 ```
 cd example
-../pywb/pywb.py packets/test-1-packet.yaml -c 20 -t 5 10.0.1.44:12701
+../pywb/pywb.py -F packets/test-2-packets.yaml -c 20 -t 5 10.0.1.43:18080
 ```
 
 You can also refer to `./example/PYWB-SEND-PACKET.sh`.
