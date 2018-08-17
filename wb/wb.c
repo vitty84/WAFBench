@@ -297,7 +297,6 @@ struct data {
 
 /* --------------------- GLOBALS ---------------------------- */
 
-
 #ifdef _WAF_BENCH_  // globals and definitions for WAF_BENCH
 
 #define WAF_BENCH_VERSION   "1.0.0" /* start from version 0.1.0, now it's 1.0.0           */
@@ -944,8 +943,8 @@ void print_progress(int forced_print )
 		delta_t = time_now - prev_heartbeat_time;
         if (forced_print || prev_heartbeat_time) {
 			if (!g_extended_progress) // print out simple info
-            fprintf(stderr, "%2d: Completed %6d requests, rate is %ld #/sec.\n", 
-                ++heartbeats_num, done, APR_USEC_PER_SEC * (done - prev_done)/delta_t);
+            fprintf(stderr, "%2d: Completed %6d requests, rate is %lld #/sec.\n", 
+                ++heartbeats_num, done, (long long int)(APR_USEC_PER_SEC * (done - prev_done)/delta_t));
 			else { 	// print out additional info
 		        apr_time_t totalcon = 0, total = 0, totald = 0, totalwait = 0;
 		        apr_time_t meancon, meantot, meand, meanwait;
@@ -1030,13 +1029,13 @@ void print_progress(int forced_print )
 				sample_start = (sample_start + req_num)%g_stats_window;
 				
 				//fprintf(stderr, "\nTime Req(#/sec) Recv(kBps) Failed(C/R/L/E/W/Non-2xx)");
-				fprintf(stderr, "%-5d%-11d%-11d", 
+				fprintf(stderr, "%-5d%-11lld%-11lld", 
 						++heartbeats_num,  
 						(long long int)(APR_USEC_PER_SEC * (done - prev_done)/delta_t),
 						(long long int)(APR_USEC_PER_SEC * (totalread - prev_totalread)/delta_t/1000));
 				if (send_body)
 					//fprintf(stderr, "Sent(kBps) ");
-					fprintf(stderr, "%-11d", (long long int)(APR_USEC_PER_SEC*(totalposted - prev_totalposted)/delta_t/1000));
+					fprintf(stderr, "%-11lld", (long long int)(APR_USEC_PER_SEC*(totalposted - prev_totalposted)/delta_t/1000));
 
 				//fprintf(stderr, "Latency(min/max/avg/+-sd) Failed(C/R/L/E/W/Non-2xx)");
 				fprintf(stderr, "%-6lld/%-8lld/%-6lld/%-8.1f/",(long long int)mintot,(long long int)maxtot,(long long int)meantot,sdtot);
