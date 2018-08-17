@@ -1622,7 +1622,7 @@ static void write_request(struct connection * c)
                 // mark its end so that we can use strstr
                 g_new_header[g_new_header_len] = 0;
                 char * new_request_end = g_new_header + g_new_header_len;
-                
+
                 // enumerate to process all sub_strings
                 int i;
                 for (i = 0; i < g_sub_string_num; i ++) {
@@ -3480,6 +3480,7 @@ int main(int argc, const char * const argv[])
     auth = "";
     proxyhost = "";
     hdrs = "";
+
     setbuf(stdout, NULL);
     apr_app_initialize(&argc, &argv, NULL);
     atexit(apr_terminate);
