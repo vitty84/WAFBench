@@ -68,20 +68,10 @@ wb -t 10 live.com/home.html
 
 Benchmark "live.com/home.html" for 10 seconds just like ab.
 
-### WAF performance testing with YAML file in 2 steps
-
-#### Step 1: Generate the packets with YMAL file
-
-`YAML_generator.py` is located in `Generator/`.
+### WAF performance testing
 
 ```
-python YAML_generator.py -o pkts.dat sample.yaml 
-```
-	   
-#### Step 2: Test using generated packets
-
-```
-wb -t 10 -F pkts.dat 10.0.1.131:18081
+wb -t 10 -F requests.pkt 10.0.1.131:18081
 ```
 
 The three options are:    
@@ -123,7 +113,6 @@ There are several examples in `../example/` to help understanding usage.
 - `WB-GET.sh` uses `wb` to conduct GET test.
 - `WB-POST.sh` uses `wb` to conduct POST test.
 - `WB-SEND-PACKET.sh` uses `wb` to send HTTP packets directly.
-- `WB-SEND-PACKET-FROM-YAML.sh` uses `wb` and [`YAML_generator.py`](../Generator/YAML_generator.py) to send packets from YAML file.
 
 ## Synopsis
 
