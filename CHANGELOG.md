@@ -5,21 +5,34 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) and this project does adhere to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-### Added
-- [FTW Compatible Tool Suits](./FTW-compatible-tool/README.md) to support FTW testing.
-- [`./Generator`](./Generator/README.md) contains some generators to generate `wb` format packets from high level information. Currently there is only a `YAML_generator.py`.
-- `./example` adds several demos for wb and FTW Compatible Tool Suits.
-- Add tutorial of conducting FTW testing in [wb's README](./wb/README.md).
-- [README.md](./README.md) adds infos about FTW Compatible Tool Suits and YAML generator.
-- [README.md](./README.md) adds attributions to [FTW](https://github.com/fastly/ftw)
+### Developing
+- pywb
+- FTW-compatible-tool
 
+## [1.2.0] - 2018-08-17
+### Added
+- [pywb](./pywb/README.md) an enhanced tool to wb.
 ### Changed
-- Revise motivations and dependency instructions in [README.md](./README.md)
 - Rename `./sample` to `./example` 
+
+## [1.1.0] - 2018-08-13
+### Added
+- Add a feature to forcefully assert the "Connection: close" for each request packets.
+
+## [1.0.1] - 2018-08-01
+### Changed
+- Send requests ordered by time.
+- Disable the buffer of stdout
+
+### Fixed
+- Some typos
+- Crash without specified log
+- Request header estimation error
+- Request header end setting error
 
 ## [1.0.0] - 2018-07-16
 ### Added
-- [README.md](./README.md) describes WAF Bench tool suits probject.
+- [README.md](./README.md) describes WAF Bench tool suits project.
 - [CHANGELOG.md](./CHANGELOG.md) to track changes.
 - [wb](./wb/README.md), a superset of [ab](https://github.com/CloudFundoo/ApacheBench-ab) to make benchmarking WAF more easily.
 - `./sample` to show demos of WAF Bench tool suits. Currently, it only has examples for wb.
