@@ -162,7 +162,7 @@ if __name__ == '__main__':
         elif sys.argv[i] == "-o" or sys.argv[i] == "--output":
             i += 1
             if i >= len(sys.argv):
-                error()
+                error("need an argument as the output")
             packets_file = sys.argv[i]
         else:
             packets_files.append(sys.argv[i])
