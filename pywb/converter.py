@@ -1,95 +1,292 @@
-#!/usr/bin/env python
+#!/usr/bin/python
 # -*- coding: utf-8 -*-
 
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License.
 
-from pywb_utility import *
+""" Convert multiple packets into a packets list
+
+This exports:
+    - read_packets_from_pkt_files is a function that
+        reads packets from .pkt files.
+    - read_packets_from_pkt_paths: is a function that
+        reads packets from a set of paths that can be .pkt files
+        or directories that include .pkt files.
+    - convert_rules_to_packets: is a function that
+        convert a set of ftw.ruleset to a packets generator
+    - convert_yaml_strings_to_packets: is a function that
+        convert a set of yaml strings required by ftw to a packets generator
+    - convert_yaml_files_to_packets: is a function that
+        convert a set of yaml files required by ftw to a packets generator
+    - convert_yaml_directories_to_packets: is a function that
+        convert a set of directories contains yaml files required by ftw
+        to a packets generator
+    - convert_yaml_paths_to_packets: is a function that
+        convert a set of paths contains yaml files required by ftw
+        to a packets generator
+    - convert: is a function that execute a convertion
+        from a set of paths to a packets generators
+    - execute: is a function that execute a convertion and
+        export all of packets into the exporter
+
+Convert packets saved in files(.yaml, .pkt) or strings into a packets list
+"""
+
+__all__ = [
+    "read_packets_from_pkt_files",
+    "read_packets_from_pkt_paths",
+    "convert_rules_to_packets",
+    "convert_yaml_strings_to_packets",
+    "convert_yaml_files_to_packets",
+    "convert_yaml_directories_to_packets",
+    "convert_yaml_paths_to_packets",
+    "convert",
+    "execute",
+]
+
+import os
+import io
+import sys
+import functools
+
+import ftw
+import yaml
+
+import packetsexporter
 
 
-# read packets from .pkt file
-# @param pkt_file: the path of file of save packets
-# @return: packets list. the packets list saved in the file
-def read_packets_from_pkt_file(pkt_file):
-    import os
-    pkt_file = os.path.abspath(pkt_file)
-    if not os.path.exists(pkt_file):
-        error(pkt_file + " is not existed\n")
-    with open(pkt_file, "rb") as f:
-        return [f.read()]
-    return []
+def _accept_iterable(func):
+    @functools.wraps(func)
+    def _decorator(iterable_):
+        if not hasattr(iterable_, "__iter__"):
+            iterable_ = [iterable_]
+        return func(iterable_)
+    return _decorator
 
-# read packets from .pkt file set
-# @param pkt_paths: the path set of save packets
-# @return: packets list. the packets list saved in the file
-def read_packets_from_pkt_paths(pkt_paths = []):
 
-    if type(pkt_paths) == str:
-        pkt_paths = [pkt_paths]
-    packets = []
+def _expand_nest_generator(func):
+    @functools.wraps(func)
+    def _decorator(*args, **kw):
+        iterable_ = func(*args, **kw)
+        if not hasattr(iterable_, "__iter__"):
+            yield iterable_
+        else:
+            iterable_ = iterable_.__iter__()
+            visit_stack = [iterable_]
+            while visit_stack:
+                iterable_ = visit_stack[-1]
+                if not hasattr(iterable_, "__iter__"):
+                    yield iterable_
+                    visit_stack.pop()
+                else:
+                    try:
+                        iterable_ = next(iterable_)
+                        if hasattr(iterable_, "__iter__"):
+                            iterable_ = iterable_.__iter__()
+                        visit_stack.append(iterable_)
+                    except StopIteration:
+                        visit_stack.pop()
+    return _decorator
 
-    for pkt_path in pkt_paths:
+
+@_accept_iterable
+@_expand_nest_generator
+def read_packets_from_pkt_files(files):
+    """Read packets from .pkt files
+
+    Arguments:
+        files: a set of files of save packets
+
+    Return a packets generator
+    """
+    buffer_ = ""
+    for file_ in files:
+        file_ = os.path.abspath(file_)
+        with open(file_, "rb", io.DEFAULT_BUFFER_SIZE) as fd:
+            while True:
+                bytes_ = fd.read(io.DEFAULT_BUFFER_SIZE)
+                if not bytes_:
+                    if buffer_:
+                        yield buffer_
+                    break
+                while bytes_:
+                    delimit_pos = bytes_.find('\0')
+                    if delimit_pos == -1:
+                        buffer_ += bytes_
+                        bytes_ = None
+                    else:
+                        buffer_ += bytes_[:delimit_pos]
+                        if buffer_:
+                            yield buffer_
+                        buffer_ = ""
+                        bytes_ = bytes_[delimit_pos + 1:]
+
+
+@_accept_iterable
+@_expand_nest_generator
+def read_packets_from_pkt_paths(paths):
+    """ Reads packets from a set of paths that can be .pkt files
+        or directories that include .pkt files.
+
+    Arguments:
+        paths: a set of paths that can be .pkt files
+            or directories that include .pkt files.
+
+    Return a packets generator
+        that will generate all of packets saved in those paths
+    """
+    for path_ in paths:
         import os
-        pkt_path = os.path.abspath(pkt_path)
-        if not os.path.exists(pkt_path):
-            error(pkt_path + " is not existed\n")
-            
-        if os.path.isdir(pkt_path):
-            for root, _, files in os.walk(pkt_path):
+        path_ = os.path.abspath(path_)
+
+        if os.path.isdir(path_):
+            for root, _, files in os.walk(path_):
                 for file in files:
-                    #second item is file ext
                     if os.path.splitext(file)[1].lower() != ".pkt":
                         continue
-                    packets += read_packets_from_pkt_file(os.path.join(root, file))
-                    
-        elif os.path.isfile(pkt_path):
-            if os.path.splitext(pkt_path)[1].lower() != ".pkt":
+                    yield read_packets_from_pkt_files(
+                        os.path.join(root, file))
+        elif os.path.isfile(path_):
+            if os.path.splitext(path_)[1].lower() != ".pkt":
                 continue
-            packets += read_packets_from_pkt_file(pkt_path)
-            
-    return packets
+            yield read_packets_from_pkt_files(path_)
+        else:
+            raise IOError("No such file or path: '%s'" % (path_, ))
 
-# Convert ruleset to packets
-# @param ruleset: the ftw.ruleset
-# @return: packets generator
-def convert_ruleset_to_packets(ruleset):
-    for rule in ruleset:
+
+@_accept_iterable
+@_expand_nest_generator
+def convert_rules_to_packets(rules):
+    """ Convert a set of ftw.ruleset to a packets generator
+
+    Arguments:
+        rules: a set of ftw.ruleset
+
+    Return a packets generator
+        that will generate all of packets from those ftw.rulesets
+    """
+    for rule in rules:
         for test in rule.tests:
             for _, stage in enumerate(test.stages):
-                import ftw
                 http_ua = ftw.http.HttpUA()
                 http_ua.request_object = stage.input
                 http_ua.build_request()
                 yield str(http_ua.request)
 
-# Convert yaml string to packets
-# @param yaml_string: a string of yaml format
-# @return: packets generator
-def convert_yaml_string_to_packets(yaml_string):
-    import yaml
-    import ftw
-    rule = ftw.ruleset.Ruleset(yaml.load(yaml_string))
-    return convert_ruleset_to_packets([rule])
 
-# Convert yaml file to packets
-# @param yaml_file: a file of yaml format
-# @return: packets generator
-def convert_yaml_file_to_packets(yaml_file):
-    import ftw
-    ruleset = ftw.util.get_rulesets(yaml_file, False)
-    return convert_ruleset_to_packets(ruleset)
+@_accept_iterable
+@_expand_nest_generator
+def convert_yaml_strings_to_packets(strings):
+    """ Convert a set of yaml strings required by ftw to a packets generator
 
-# Convert yaml file to packets
-# @param yaml_directory: a directory includes some files of yaml format
-# @return: packets generator
-def convert_yaml_directory_to_packets(yaml_directory):
-    import ftw
-    #True means that recursively visit the yaml file from the directory
-    ruleset = ftw.util.get_rulesets(yaml_directory, True)
-    return convert_ruleset_to_packets(ruleset)
+    Arguments:
+        strings: a set of yaml strings required by ftw
 
-# help document
-def help():
+    Return a packets generator
+        that will generate all of packets included in those yaml strings
+    """
+    for string_ in strings:
+        rule = ftw.ruleset.Ruleset(yaml.load(string_))
+        yield convert_rules_to_packets(rule)
+
+
+@_accept_iterable
+@_expand_nest_generator
+def convert_yaml_files_to_packets(files):
+    """ Convert a set of yaml files required by ftw to a packets generator
+
+    Arguments:
+        files: a set of yaml files required by ftw
+
+    Return a packets generator
+        that will generate all of packets saved in those yaml files
+    """
+    for file_ in files:
+        if os.path.splitext(file_)[1].lower() != ".yaml":
+            continue
+        rules = ftw.util.get_rulesets(file_, False)
+        yield convert_rules_to_packets(rules)
+
+
+@_accept_iterable
+@_expand_nest_generator
+def convert_yaml_directories_to_packets(directories):
+    """ Convert a set of directories contains yaml files required by ftw
+        to a packets generator
+
+    Arguments:
+        directories: a set of directories contains yaml files required by ftw
+
+    Return a packets generator
+        that will generate all of packets saved in those directories
+    """
+    for directory_ in directories:
+        rules = ftw.util.get_rulesets(directory_, True)
+        yield convert_rules_to_packets(rules)
+
+
+@_accept_iterable
+@_expand_nest_generator
+def convert_yaml_paths_to_packets(paths):
+    """ Convert a set of paths contains yaml files required by ftw
+        to a packets generator
+
+    Arguments:
+        paths: a set of paths contains yaml files required by ftw
+
+    Return a packets generator
+        that will generate all of packets saved in those paths
+    """
+    for path_ in paths:
+        if os.path.isfile(path_):
+            yield convert_yaml_files_to_packets(path_)
+        elif os.path.isdir(path_):
+            yield convert_yaml_directories_to_packets(path_)
+        else:
+            raise IOError("No such file or path: '%s'" % (path_, ))
+
+
+CONVERTERS = {
+    ".yaml": convert_yaml_paths_to_packets,
+    ".pkt": read_packets_from_pkt_paths,
+}
+
+
+@_accept_iterable
+@_expand_nest_generator
+def convert(paths):
+    """ Execute a convertion from a set of paths to a packets generators
+
+    Arguments:
+        paths: a set of paths includes .yaml and .pkt files
+            or directories contain those kind of files
+
+    Return a packets generator
+        that will generate all of packets saved in those paths
+    """
+    for path_ in paths:
+        for _, convertor in CONVERTERS.items():
+            yield convertor(path_)
+
+
+def execute(paths, exporter=None):
+    """ Execute a convertion and export all of packets into the exporter
+
+    Arguments:
+        paths: a set of paths includes %s files
+            or directories contain those kind of files
+        exporter
+    """
+    if not isinstance(exporter, packetsexporter.PacketsExporter):
+        with packetsexporter.PacketsExporter(exporter) as exporter:
+            for packet in convert(paths):
+                exporter.export(packet)
+    else:
+        for packet in convert(paths):
+            exporter.export(packet)
+
+
+def _help():
     return '''
 converter.py
     convert yaml or pkt files into a pkt file
@@ -99,59 +296,17 @@ SYNOPSIS
     ./converter.py [OPTION] [PATHS...]
 
 DESCRIPTION
-    PATHS...        input .yaml/.pkt files or directories that includes these kinds of files
+    PATHS...        input .yaml/.pkt files or directories that includes \
+ these kinds of files
     -o/--output     output packets file , default is stdout
     -h/--help       print help
-    
+
 EXAMPLE
     ./converter.py rtt_ruleset/ -o packets.pkt
     '''
 
-converters = {
-    ".yaml": convert_yaml_directory_to_packets,
-    ".pkt" : read_packets_from_pkt_paths,
-}
-
-# execute this file
-# @param packet_paths: a list of path that includes .pkt or .yaml files
-# @param outputer: output file of packets, default is stdout
-def execute(packet_paths = [], outputer = ""):
-
-    if type(packet_paths) == str:
-        packet_paths = [packet_paths]
-
-    import packets_outputer
-    if type(outputer) != packets_outputer.packets_outputer:
-        outputer = packets_outputer.packets_outputer(outputer)
-
-    #convert all path to abs path
-    for i in range(len(packet_paths)):
-        import os
-        packet_paths[i] = os.path.abspath(packet_paths[i])
-        if not os.path.exists(packet_paths[i]):
-            error(packet_paths[i] + " is not existed\n")
-
-    #convert all packets files into outputer
-    for path in packet_paths:
-        import os
-        if os.path.isdir(path):
-            for _, converter in converters.items():
-                outputer(converter(path))
-        elif os.path.isfile(path):
-            _, file_ext = os.path.splitext(path)
-            file_ext = file_ext.lower()
-            if file_ext not in converters:
-                error(path + "'s extension " + file_ext + " isn't supported")
-            outputer(converters[file_ext](path))
 
 if __name__ == '__main__':
-    import sys
-    import os
-    
-    executable = os.path.basename(os.path.normpath(sys.argv[0]))
-    if executable == "python" or executable == "python3":
-        sys.argv = sys.argv[1:]
-
     packets_file = ""
     packets_files = []
     i = 1
@@ -162,7 +317,7 @@ if __name__ == '__main__':
         elif sys.argv[i] == "-o" or sys.argv[i] == "--output":
             i += 1
             if i >= len(sys.argv):
-                error("need an argument as the output")
+                raise ValueError("need an argument as the output")
             packets_file = sys.argv[i]
         else:
             packets_files.append(sys.argv[i])

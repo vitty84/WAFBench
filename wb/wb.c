@@ -299,7 +299,7 @@ struct data {
 
 #ifdef _WAF_BENCH_  // globals and definitions for WAF_BENCH
 
-#define WAF_BENCH_VERSION   "1.0.0" /* start from version 0.1.0, now it's 1.0.0           */
+#define WAF_BENCH_VERSION   "1.2.1" /* start from version 0.1.0, now it's 1.2.1           */
 #define WAF_BENCH_SUBVERSION "2018-08-14-11:46:05" /* subversion, using git commit time */
 #define INI_FILENAME        "wb.ini"/* ini file filename                                */
 #define DEFAULT_TEST_TIME   5       /* default test time in seconds                     */
@@ -1658,7 +1658,7 @@ static void write_request(struct connection * c)
                 if (connection_hdr == NULL) {
                     connection_hdr = strcasestr(g_new_header,"\n\nConnection:");
                 }
-
+                
                 //if always connection:close, remove old connection:type
                 if (g_add_connection_close == 2 && connection_hdr != NULL ) {
                     char * connection_hdr_end = strstr(connection_hdr + sizeof("\r\nConnection:") - 1, "\r\n");
@@ -3767,7 +3767,7 @@ PARSE_ARGS:
                     opt_host = host;
                 } else if (strncasecmp(opt_arg, "Accept:", 7) == 0) {
                     opt_accept = 1;
-
+                    
 #ifdef _WAF_BENCH_ // Connection:close header
                 } else if (strncasecmp(opt_arg, "Connection:", 11) == 0) {
                     opt_connection = 1;

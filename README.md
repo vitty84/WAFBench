@@ -40,28 +40,29 @@ WAF Bench (wb) is the ab-like tool for conducting performance testing.
 * M0 - Send/Receive HTTP&HTTPS requests/responses
 * M0 - Report performance statistics
 * M0 - Set the limit of testing time or total request number in testing
-* M1 - Support customized packets input
-* M1 - Provide debug mode with 4 level
-* M2 - Support automatically adding sequence number in URL
-* M2 - Support request rate limit
+* M0 - Support customized packets input
+* M0 - Provide debug mode with 4 level
+* M0 - Support automatically adding sequence number in URL
+* M0 - Support request rate limit
 
 ### Python-based WAF Bench
 Python WAF Bench (pywb) is an enhanced tools of wb.
-* M0 - Compatible with wb
-* M0 - Send multiple file and directories in once executing.
-* M0 - Automatically inferring Content-Type according to the post/put file
-* M1 - Support pip install
+* M1 - Compatible with wb
+* M1 - Send multiple file and directories in once executing.
+* M1 - Infer Content-Type from the file extension automatically
+* M2 - Support pip install
 
 
 ### FTW-compatible Tool
 
-* M0 - Generate traffic form YAML file (in the format of FTW framwork)
-* M0 - Generate comparison condition file from YAML files
-* M0 - Support *status*, *log_contains*, *no_log_contains*, *expect_error* directives as FTW framwork
-* M0 - Maintain MSFT regression testing files (FINISHED BY Yanshu)
-* M1 - Can search the compare result by test title and give out very detailed results (raw YAML, raw request, raw response, compare result)
+* M2 - Generate traffic form YAML file (in the format of FTW framework)
+* M2 - Generate comparison condition file from YAML files
+* M2 - Support *status*, *log_contains*, *no_log_contains*, *expect_error* directives as FTW framework
+* M2 - Can search the compare result by test title and give out very detailed results (raw YAML, raw request, raw response, compare result)
 
 ### Auto-Test Generator
+* M3 - Automatically generate requests by ModSecurity rule set for testing the coverage of WAF
+
 
 ## Usage
 
@@ -140,43 +141,18 @@ make install
 Assuming that the server is at 10.0.1.1:18081 running we can:
 
 ```
-wb -t 10 -c 20  10.0.1.1:18081
+./pywb/pywb.py -t 10 -c 20  10.0.1.1:18081
 ```
 
 Or send requests from a file such as *requests.dat*:
 
 ```
-wb -t 10 -c 25 -F requests.dat 10.0.1.1:18081
+./pywb/pywb.py -t 10 -c 25 -F ./example/packets/test-2-packets.yaml 10.0.1.1:18081
 ```
-
-* About the format of request file, please refer to [wb Readme](./wb/README.md)
-
-
-#### Recommend(**[pywb](./pywb/)**)
-**[pywb](./pywb/)** is an enhanced tools of wb. It is strongly recommended that edit the request file from high level information, like yaml, for your customized packets rather than writing raw packet data ,like pkt, by own.
-
-Meanwhile the **[pywb](./pywb/)** can directly send request that defined by yaml format. :
-
-```
-cd example
-../pywb/pywb.py -F packets/test-2-packets.yaml -c 20 -t 5 10.0.1.43:18080
-```
-
-You can also refer to `./example/PYWB-SEND-PACKET.sh`.
 
 * More information about **[pywb](./pywb/)**, please refer to [pywb Readme](./pywb/README.md)
+* About the format of request file, please refer to [wb Readme](./wb/README.md)
 
-#### Conduct WAF Correctness Testing
-
-* Please install the dependency library for FTW-compatible-tool first. You can refer to [FTW-compatible-tool Readme](./FTW-compatible-tool/README.md)
-* We recommend you to mount the server's log file to client machine. For some helps, you may refer to [here](https://unix.stackexchange.com/questions/62677/best-way-to-mount-remote-folder). Assuming we mount it to */mnt/server/logs/error.log* 
-* Assuming that the server is at 10.0.1.1:18081 running and we are in folder *FTW-compatible-tool/* we can:
-
-```
-./rtt.sh -d 10.0.1.1:18081 -y rtt_rules -l /mnt/server/logs/error.log
-```
-
-* Then we can use ftw_log_searcher to get more detailed info
 
 ### Advance Usage
 
@@ -184,7 +160,6 @@ Since the components are independent to each other, the detailed build, install 
 
 * [wb](./wb/README.md)
 * [pywb](./pywb/README.md)
-* [FTW-Compatible Tool](./FTW-compatible-tool/README.md)
 
 ## Attributions
 

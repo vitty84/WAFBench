@@ -8,7 +8,7 @@
 
 ## Prerequisites
 
-Some software or libraries may be necessary for have been listed in [WB Home Page](../README.md), but another requisite is that `wb`(after 2018-08-14) need be installed.
+Some software or libraries may be necessary for have been listed in [WB Home Page](../README.md), and another requisite is that `wb`(Version >= 1.2.1) need be installed.
 
 ### Synopsis
 
@@ -23,62 +23,74 @@ Some software or libraries may be necessary for have been listed in [WB Home Pag
 
 ***ENHANCE OPTION***
 
-- -F supports *.yaml and *.pkt and directories that include these kinds of file.
+- -F supports *.yaml and *.pkt and directories that include these kinds of file. Meanwhile, you can set -F multiple times to send multiple packets saved in different files at once.
 - -u and -p will automatically identify the file type that wants to be sent by its ext, and modify the Content-Type. These options support almost all of the types that are mentioned by MIME.
 
 ### Example
 
 ```
-#post a json file, automatically infer the Content-Type
+# post a json file, automatically infer the Content-Type
 ./pywb.py  10.0.1.131:18080  -p ../example/packets/requestbody2kb.json  -t 5 -c 20
 
-#send packets in a specified directory
+# send packets in a specified directory
 ./pywb.py  10.0.1.131:18080  -F ../example/packets/  -t 5 -c 20
 
-#send packets in multiple files
+# send packets in multiple files
 ./pywb.py  10.0.1.43:18080 -t 5 -c 20 -k -F ../example/packets/test-2-packets.yaml -F ../example/packets/test-2-packets.pkt
+# or
+./pywb.py  10.0.1.43:18080 -t 5 -c 20 -k -F ../example/packets/test-2-packets.yaml ../example/packets/test-2-packets.pkt
 ```
 
 ### Develop
 Two interfaces are provided to developers to customize new features. 
 ```
-# option_parser.py
-#
-# INTERFACE for option parsing
-# implement this interface and bind its instance to an option
-# this instance will be called when the option meet
-class parser(object):
-    # parse option
-    # @param options: the parameters of the triggered option, 
-    #                 it's the parameters list that doesn't include triggered option
-    # @return:        the number of parameters of this parser need
-    def parse(self, options):
+# optionparser.py
+class OptionParser(object):
+    """ OptionParser is an abstract class and defines the interfaces.
+        All of option parser need inherit this class.
+    """
+
+    def do(self, arguments):
+        """ Do the action
+
+        Arguments:
+            - arguments: a list, the arguments what this action need
+
+        Return is a interger that means the number of this action need
+        """
         return 0
-    
-    # dump the option for wb
-    # @return:        the options that will be passed to wb
-    #                 it's a parameters list. if the space-separated string is inserted
-    #                 into the return list, it'll be as just one parameter to pass to wb
+
     def dump(self):
+        """ Dump the new options for wb
+
+        Return a list of string, the options that will be passed to wb
+            it's a parameters list. if the space-separated string is inserted
+            into the return list, it'll be as just one parameter to pass to wb
+        """
         return []
 
-    # help document
-    # @return: the help document for the option bound by this instance 
     def help(self):
+        """ Help document for this action
+
+        Return is a string of help document for option bound by this instance
+        """
         return " "
 
-# INTERFACE for processing of the stderr and stdout of wb
-# line by line to process the stderr and stdout of wb
-# It's not recommended to modify the line, 
-# because it maybe conflicts with other filters
-class filter(object):
-    #process one line
-    # @param line: a line of string type from stderr and stdout of wb,
-    #              the concrete content depends on the runtime of wb
-    # @return:     what content the filter want to output. 
-    #              if the return is None, this filter will be a terminator,
-    #              It means that all of the filters after this will lose the 
-    #              information of this line.
+# outputfilter.py
+class OutputFilter(object):
+    """ Process the output of wb
+        Line by line to process the output of wb.
+        It's not recommended to modify the line, because it maybe
+        conflict with other filters
+
+    Arguments:
+        line: a line of string end with '\n' from the output of wb,
+            the concrete content depends on the runtime of wb.
+
+    Return is a string. If the return is None, this filter will be a
+        terminator, which means that all of the filters after this will
+        lose the information of this lien.
+    """
     def __call__(self, line):
         return line
 
@@ -89,12 +101,12 @@ class filter(object):
 
 
 import pywb
-import option_parser
+import optionparser
 
 # IMPLEMENT import command
 # import previous command that save in the file pywb.ini (-t 5 -c 20 10.0.1.43:18080)
 # by -x pywb.ini
-class execute_init(option_parser.parser):
+class ExecuteINI(optionparser.OptionParser):
     def parse(self, options):
         #options[0] will be the file path
         command = ""
@@ -114,7 +126,7 @@ class execute_init(option_parser.parser):
         return "   -x FILE      will import some arguments that were saved in FILE as the arguments of wb"
 
 #execute wb
-pywb.execute(["-x", "pywb.ini"], customize d_options = { "-x" : execute_init()})
+pywb.execute(["-x", "pywb.ini"], customized_options={ "-x":ExecuteINI()})
 
 
 
@@ -123,11 +135,11 @@ pywb.execute(["-x", "pywb.ini"], customize d_options = { "-x" : execute_init()})
 #######################
 
 import pywb
-import output_filter
+import outputfilter
 
 # IMPLEMENT logger
 # to save all of output from wb 
-class logger(output_filter.filter):
+class logger(outputfilter.OutputFilter):
     def __init__(self, log_file):
         self.__log_file = log_file
     def __call__(self, line):
