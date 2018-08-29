@@ -5,5 +5,5 @@
 
 basepath=$(cd `dirname $0`; pwd)
 echo "Doing AB-like POST testing"
-echo "command: ../pywb/pywb.py -p packets/requestbody2kb.json  -c 20 -t 5 10.0.1.43:18080"
-../pywb/pywb.py -p packets/requestbody2kb.json  -c 20 -t 5 10.0.1.43:18080
+echo "command: ../pywb/main.py -p packets/requestbody2kb.json  -c 20 -t 5 10.0.1.43:18080"
+../pywb/main.py -p packets/requestbody2kb.json  -c 20 -t 5 10.0.1.43:18080

@@ -141,13 +141,13 @@ make install
 Assuming that the server is at 10.0.1.1:18081 running we can:
 
 ```
-./pywb/pywb.py -t 10 -c 20  10.0.1.1:18081
+./pywb/main.py -t 10 -c 20  10.0.1.1:18081
 ```
 
 Or send requests from a file such as *requests.dat*:
 
 ```
-./pywb/pywb.py -t 10 -c 25 -F ./example/packets/test-2-packets.yaml 10.0.1.1:18081
+./pywb/main.py -t 10 -c 25 -F ./example/packets/test-2-packets.yaml 10.0.1.1:18081
 ```
 
 * More information about **[pywb](./pywb/)**, please refer to [pywb Readme](./pywb/README.md)

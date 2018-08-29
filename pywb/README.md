@@ -13,7 +13,7 @@ Some software or libraries may be necessary for have been listed in [WB Home Pag
 ### Synopsis
 
 ```
-./pywb.py [options] [http[s]://]hostname[:port]/path
+./main.py [options] [http[s]://]hostname[:port]/path
 ```
 
 ### Options
@@ -30,15 +30,15 @@ Some software or libraries may be necessary for have been listed in [WB Home Pag
 
 ```
 # post a json file, automatically infer the Content-Type
-./pywb.py  10.0.1.131:18080  -p ../example/packets/requestbody2kb.json  -t 5 -c 20
+./main.py  10.0.1.131:18080  -p ../example/packets/requestbody2kb.json  -t 5 -c 20
 
 # send packets in a specified directory
-./pywb.py  10.0.1.131:18080  -F ../example/packets/  -t 5 -c 20
+./main.py  10.0.1.131:18080  -F ../example/packets/  -t 5 -c 20
 
 # send packets in multiple files
-./pywb.py  10.0.1.43:18080 -t 5 -c 20 -k -F ../example/packets/test-2-packets.yaml -F ../example/packets/test-2-packets.pkt
+./main.py  10.0.1.43:18080 -t 5 -c 20 -k -F ../example/packets/test-2-packets.yaml -F ../example/packets/test-2-packets.pkt
 # or
-./pywb.py  10.0.1.43:18080 -t 5 -c 20 -k -F ../example/packets/test-2-packets.yaml ../example/packets/test-2-packets.pkt
+./main.py  10.0.1.43:18080 -t 5 -c 20 -k -F ../example/packets/test-2-packets.yaml ../example/packets/test-2-packets.pkt
 ```
 
 ### Develop
