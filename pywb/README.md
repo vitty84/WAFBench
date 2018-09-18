@@ -76,6 +76,7 @@ class OptionParser(object):
         """
         return " "
 
+
 # outputfilter.py
 class OutputFilter(object):
     """ Process the output of wb
@@ -89,7 +90,7 @@ class OutputFilter(object):
 
     Return is a string. If the return is None, this filter will be a
         terminator, which means that all of the filters after this will
-        lose the information of this lien.
+        lose the information of this line.
     """
     def __call__(self, line):
         return line
@@ -101,13 +102,13 @@ class OutputFilter(object):
 
 
 import pywb
-import optionparser
+
 
 # IMPLEMENT import command
 # import previous command that save in the file pywb.ini (-t 5 -c 20 10.0.1.43:18080)
 # by -x pywb.ini
-class ExecuteINI(optionparser.OptionParser):
-    def parse(self, options):
+class ExecuteINI(pywb.OptionParser):
+    def do(self, options):
         #options[0] will be the file path
         command = ""
         with open(options[0], 'r') as fd:
@@ -135,11 +136,10 @@ pywb.execute(["-x", "pywb.ini"], customized_options={ "-x":ExecuteINI()})
 #######################
 
 import pywb
-import outputfilter
 
 # IMPLEMENT logger
 # to save all of output from wb 
-class logger(outputfilter.OutputFilter):
+class logger(pywb.OutputFilter):
     def __init__(self, log_file):
         self.__log_file = log_file
     def __call__(self, line):
