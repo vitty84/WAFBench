@@ -65,11 +65,22 @@ WHERE traffic_id = ?;
 
 
 SQL_QUERY_RESULT = '''
-SELECT 
+SELECT
     test_title ,
     output ,
     raw_request ,
     raw_response ,
     raw_log
+FROM Traffic;
+'''
+
+SQL_QUERY_TRAFFIC_COUNT = '''
+SELECT COUNT(*)
+FROM Traffic;
+'''
+
+SQL_QUERY_TEST_TITLE = '''
+SELECT test_title
 FROM Traffic
+WHERE traffic_id = ?;
 '''
